@@ -14,10 +14,19 @@ include(cmake/options.cmake)
 
 find_package(h5fortran CONFIG REQUIRED)
 
+add_library(msis_ifc src/msis_interface.f90)
+target_include_directories(msis_ifc
+PUBLIC
+$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+$<INSTALL_INTERFACE:include>
+)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/msis_interface.mod TYPE INCLUDE)
+
 add_executable(msis_setup src/msis_driver.f90)
 
 if(msis2)
-  include(${PROJECT_SOURCE_DIR}/cmake/msis2.cmake)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/msis2.cmake)
 endif()
 
 add_subdirectory(src)

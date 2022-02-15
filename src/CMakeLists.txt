@@ -19,7 +19,6 @@ target_compile_options(msis00mod PRIVATE
 
 # --- build abstract MSIS interface
 
-add_library(msis_ifc msis_interface.f90)
 target_link_libraries(msis_ifc PRIVATE msis00mod)
 
 if(msis2)
