@@ -3,6 +3,7 @@ name: ci
 env:
   CTEST_PARALLEL_LEVEL: 3
   CMAKE_BUILD_TYPE: Release
+  CMAKE_GENERATOR: Ninja
   HOMEBREW_NO_INSTALL_CLEANUP: 1
 
 on:
@@ -33,8 +34,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install prereqs
+    - name: Install system libs
       run: ${{ matrix.cmd }}
+
+    - name: Get specific version CMake
+      uses: lukka/get-cmake@v3.20.1
 
     - name: Download h5fortran
       uses: actions/checkout@v2
@@ -45,7 +49,7 @@ jobs:
     - name: Install h5fortran
       timeout-minutes: 2
       run: |
-        cmake -S $GITHUB_WORKSPACE/h5fortran -B $GITHUB_WORKSPACE/h5fortran/build --install-prefix=${HOME} -DBUILD_TESTING=no
+        cmake -S $GITHUB_WORKSPACE/h5fortran -B $GITHUB_WORKSPACE/h5fortran/build -DCMAKE_INSTALL_PREFIX=${HOME} -DBUILD_TESTING=no
         cmake --build $GITHUB_WORKSPACE/h5fortran/build
         cmake --install $GITHUB_WORKSPACE/h5fortran/build
       env:
@@ -60,4 +64,4 @@ jobs:
       run: cmake --build build
 
     - name: Test MSIS
-      run: ctest --test-dir build --preset default -V
+      run: ctest --test-dir build --no-tests=error -V

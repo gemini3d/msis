@@ -70,6 +70,7 @@ elseif(WSL)
 else()
   message(FATAL_ERROR "Could not find patch program")
 endif()
+
 endfunction(patch_file)
 
 

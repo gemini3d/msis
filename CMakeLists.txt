@@ -1,9 +1,8 @@
-cmake_minimum_required(VERSION 3.21...3.23)
-# CMake 3.21 for find_package(Msys)
+cmake_minimum_required(VERSION 3.20...3.23)
 
 project(msis
 LANGUAGES C Fortran
-VERSION 1.0.0
+VERSION 1.0.1
 )
 
 include(CTest)
