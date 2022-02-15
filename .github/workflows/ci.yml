@@ -1,0 +1,61 @@
+name: ci
+
+env:
+  CTEST_PARALLEL_LEVEL: 3
+  CMAKE_BUILD_TYPE: Release
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+on:
+  push:
+    paths:
+      - "**/*.f"
+      - "**/*.f90"
+      - "**/CMakeLists.txt"
+      - "**.cmake"
+      - ".github/workflows/ci.yml"
+
+jobs:
+
+  msis2:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            fc: gfortran
+            cmd: sudo apt update && sudo apt install libhdf5-dev
+          - os: macos-latest
+            fc: gfortran-11
+            cmd: brew install hdf5
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install prereqs
+      run: ${{ matrix.cmd }}
+
+    - name: Download h5fortran
+      uses: actions/checkout@v2
+      with:
+        repository: geospace-code/h5fortran
+        path: h5fortran
+
+    - name: Install h5fortran
+      timeout-minutes: 2
+      run: |
+        cmake -S $GITHUB_WORKSPACE/h5fortran -B $GITHUB_WORKSPACE/h5fortran/build --install-prefix=${HOME} -DBUILD_TESTING=no
+        cmake --build $GITHUB_WORKSPACE/h5fortran/build
+        cmake --install $GITHUB_WORKSPACE/h5fortran/build
+
+    - name: Configure MSIS
+      run: cmake -B build -Dmsis2=yes -DCMAKE_PREFIX_PATH=${HOME}
+      env:
+        FC: ${{ matrix.fc }}
+
+    - name: Build MSIS
+      run: cmake --build build
+
+    - name: Test MSIS
+      run: ctest --test-dir build --preset default -V
