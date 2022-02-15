@@ -22,7 +22,7 @@ COMMAND ${CMAKE_COMMAND} -Din_file:FILEPATH=${msis2_SOURCE_DIR}/msis_calc.F90 -D
 DEPENDS ${msis2_SOURCE_DIR}/msis_calc.F90
 )
 
-add_library(msis2mod OBJECT
+add_library(msis2mod
 ${_s}/alt2gph.F90
 ${_s}/msis_constants.F90
 ${_s}/msis_init.F90
@@ -40,3 +40,7 @@ COMMAND_EXPAND_LISTS
 COMMENT "Copied MSIS 2 parameter file to $<TARGET_FILE_DIR:msis_setup>"
 )
 install(FILES ${msis2_SOURCE_DIR}/msis20.parm TYPE BIN)
+
+install(TARGETS msis2mod
+EXPORT ${PROJECT_NAME}-targets
+)

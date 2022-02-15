@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.21...3.23)
 # CMake 3.21 for find_package(Msys)
 
-project(MSIS
+project(msis
 LANGUAGES C Fortran
+VERSION 1.0.0
 )
 
 include(CTest)
@@ -25,3 +26,5 @@ add_subdirectory(src)
 if(${PROJECT_NAME}_BUILD_TESTING)
   add_subdirectory(tests)
 endif()
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install.cmake)

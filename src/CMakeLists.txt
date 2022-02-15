@@ -12,7 +12,7 @@ set(msis_intel_flags -nowarn)
 
 # --- MSISE00 is always available, but MSIS 2.0 might not be available.
 
-add_library(msis00mod OBJECT msis00_gfortran.f msise00_data.f)
+add_library(msis00mod msis00_gfortran.f msise00_data.f)
 target_compile_options(msis00mod PRIVATE
 "$<$<Fortran_COMPILER_ID:GNU>:${msis00_gnu_flags}>"
 "$<$<Fortran_COMPILER_ID:Intel,IntelLLVM>:${msis_intel_flags}>")
@@ -43,6 +43,6 @@ DEBUG_POSTFIX .debug
 RELWITHDEBINFO_POSTFIX .debug
 )
 
-install(TARGETS msis_ifc msis_setup
+install(TARGETS msis00mod msis_ifc msis_setup
 EXPORT ${PROJECT_NAME}-targets
 )
