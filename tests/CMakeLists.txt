@@ -5,7 +5,7 @@ $<$<BOOL:${HDF5_HAVE_PARALLEL}>:MPI::MPI_Fortran>
 )
 
 add_executable(msis_compare test_msis.f90 assert.f90)
-target_link_libraries(msis_compare PRIVATE msis_ifc msis00mod
+target_link_libraries(msis_compare PRIVATE msis_ifc
 h5fortran::h5fortran
 $<$<BOOL:${HDF5_HAVE_PARALLEL}>:MPI::MPI_Fortran>
 )

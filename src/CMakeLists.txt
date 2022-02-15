@@ -19,7 +19,7 @@ target_compile_options(msis00mod PRIVATE
 
 # --- build abstract MSIS interface
 
-add_library(msis_ifc OBJECT msis_interface.f90)
+add_library(msis_ifc msis_interface.f90)
 target_link_libraries(msis_ifc PRIVATE msis00mod)
 
 if(msis2)
@@ -34,7 +34,7 @@ endif(msis2)
 
 # --- Standalone MSIS runner
 
-target_link_libraries(msis_setup PRIVATE msis_ifc msis00mod h5fortran::h5fortran
+target_link_libraries(msis_setup PRIVATE msis_ifc h5fortran::h5fortran
 $<$<BOOL:${HDF5_HAVE_PARALLEL}>:MPI::MPI_Fortran>
 )
 set_target_properties(msis_setup PROPERTIES
@@ -43,4 +43,6 @@ DEBUG_POSTFIX .debug
 RELWITHDEBINFO_POSTFIX .debug
 )
 
-install(TARGETS msis_setup EXPORT ${PROJECT_NAME}-targets)
+install(TARGETS msis_ifc msis_setup
+EXPORT ${PROJECT_NAME}-targets
+)

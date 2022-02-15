@@ -22,7 +22,7 @@ COMMAND ${CMAKE_COMMAND} -Din_file:FILEPATH=${msis2_SOURCE_DIR}/msis_calc.F90 -D
 DEPENDS ${msis2_SOURCE_DIR}/msis_calc.F90
 )
 
-add_library(msis2mod
+add_library(msis2mod OBJECT
 ${_s}/alt2gph.F90
 ${_s}/msis_constants.F90
 ${_s}/msis_init.F90
