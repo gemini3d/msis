@@ -48,6 +48,8 @@ jobs:
         cmake -S $GITHUB_WORKSPACE/h5fortran -B $GITHUB_WORKSPACE/h5fortran/build --install-prefix=${HOME} -DBUILD_TESTING=no
         cmake --build $GITHUB_WORKSPACE/h5fortran/build
         cmake --install $GITHUB_WORKSPACE/h5fortran/build
+      env:
+        FC: ${{ matrix.fc }}
 
     - name: Configure MSIS
       run: cmake -B build -Dmsis2=yes -DCMAKE_PREFIX_PATH=${HOME}
