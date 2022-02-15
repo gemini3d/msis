@@ -1,5 +1,7 @@
 # GEMINI3D MSIS
 
+[![ci](https://github.com/gemini3d/msis/actions/workflows/ci.yml/badge.svg)](https://github.com/gemini3d/msis/actions/workflows/ci.yml)
+
 MSIS interface for GEMINI3D
 
 This is a backup/future plan if we have instablities with MSIS being embedded into the GEMINI3D source tree.
