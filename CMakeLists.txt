@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20...3.23)
 
 project(msis
 LANGUAGES C Fortran
-VERSION 1.0.1
+VERSION 1.0.2
 )
 
 include(CTest)
