@@ -17,25 +17,26 @@ on:
 
 jobs:
 
-  msis2:
+  linux_mac:
     strategy:
       matrix:
-        include:
-          - os: ubuntu-latest
-            fc: gfortran
-            cmd: sudo apt update && sudo apt install libhdf5-dev
-          - os: macos-latest
-            fc: gfortran-11
-            cmd: brew install hdf5
+        shared: [true, false]
+        msis2: [true, false]
+        image: [
+          {os: ubuntu-latest, fc: gfortran, cmd: sudo apt update && sudo apt install libhdf5-dev},
+          {os: macos-latest, fc: gfortran-11, cmd: brew install hdf5}
+        ]
 
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
+    runs-on: ${{ matrix.image.os }}
+    timeout-minutes: 15
+    env:
+      FC: ${{ matrix.image.fc }}
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Install system libs
-      run: ${{ matrix.cmd }}
+      run: ${{ matrix.image.cmd }}
 
     - name: Get specific version CMake
       uses: lukka/get-cmake@v3.20.1
@@ -47,18 +48,14 @@ jobs:
         path: h5fortran
 
     - name: Install h5fortran
-      timeout-minutes: 2
+      timeout-minutes: 10
       run: |
-        cmake -S $GITHUB_WORKSPACE/h5fortran -B $GITHUB_WORKSPACE/h5fortran/build -DCMAKE_INSTALL_PREFIX=${HOME} -DBUILD_TESTING=no
+        cmake -S $GITHUB_WORKSPACE/h5fortran -B $GITHUB_WORKSPACE/h5fortran/build -DCMAKE_INSTALL_PREFIX=${HOME} -DBUILD_TESTING=no -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
         cmake --build $GITHUB_WORKSPACE/h5fortran/build
         cmake --install $GITHUB_WORKSPACE/h5fortran/build
-      env:
-        FC: ${{ matrix.fc }}
 
     - name: Configure MSIS
-      run: cmake -B build -Dmsis2=yes -DCMAKE_PREFIX_PATH=${HOME}
-      env:
-        FC: ${{ matrix.fc }}
+      run: cmake -B build -Dmsis2:BOOL=${{ matrix.msis2 }} -DCMAKE_PREFIX_PATH=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - name: Build MSIS
       run: cmake --build build
