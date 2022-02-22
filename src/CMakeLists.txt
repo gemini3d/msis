@@ -22,7 +22,7 @@ target_compile_options(msis00mod PRIVATE
 target_link_libraries(msis_ifc PRIVATE msis00mod)
 
 if(msis2)
-  target_link_libraries(msis_ifc PRIVATE msis2mod)
+  target_link_libraries(msis_ifc PUBLIC msis2mod)
   target_compile_options(msis2mod PRIVATE
   "$<$<Fortran_COMPILER_ID:GNU>:${msis2_gnu_flags}>"
   "$<$<Fortran_COMPILER_ID:Intel,IntelLLVM>:${msis_intel_flags}>"
