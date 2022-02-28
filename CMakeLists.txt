@@ -32,6 +32,8 @@ endif()
 add_subdirectory(src)
 
 if(${PROJECT_NAME}_BUILD_TESTING)
+  include(cmake/DllTestPath.cmake)
+
   add_subdirectory(tests)
 endif()
 
