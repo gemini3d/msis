@@ -50,12 +50,62 @@ jobs:
     - name: Install h5fortran
       timeout-minutes: 10
       run: |
-        cmake -S $GITHUB_WORKSPACE/h5fortran -B $GITHUB_WORKSPACE/h5fortran/build -DCMAKE_INSTALL_PREFIX=${HOME} -DBUILD_TESTING=no -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-        cmake --build $GITHUB_WORKSPACE/h5fortran/build
-        cmake --install $GITHUB_WORKSPACE/h5fortran/build
+        cmake -S ${{ github.workspace }}/h5fortran -B ${{ github.workspace }}/h5fortran/build -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/.. -DBUILD_TESTING=no -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+        cmake --build ${{ github.workspace }}/h5fortran/build
+        cmake --install ${{ github.workspace }}/h5fortran/build
 
     - name: Configure MSIS
-      run: cmake -B build -Dmsis2:BOOL=${{ matrix.msis2 }} -DCMAKE_PREFIX_PATH=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: cmake -B build -Dmsis2:BOOL=${{ matrix.msis2 }} -DCMAKE_PREFIX_PATH=${{ github.workspace }}/.. -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+
+    - name: Build MSIS
+      run: cmake --build build
+
+    - name: Test MSIS
+      run: ctest --test-dir build --no-tests=error -V
+
+
+  windows:
+    timeout-minutes: 20
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        shared: [true, false]
+        msis2: [true, false]
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          git
+          patch
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-ninja
+          mingw-w64-x86_64-gcc-fortran
+          mingw-w64-x86_64-hdf5
+
+    - uses: actions/checkout@v2
+
+    - name: Download h5fortran
+      uses: actions/checkout@v2
+      with:
+        repository: geospace-code/h5fortran
+        path: h5fortran
+
+    - name: Install h5fortran
+      timeout-minutes: 10
+      run: |
+        cmake -S h5fortran -B h5fortran/build "-DCMAKE_INSTALL_PREFIX=.." -DBUILD_TESTING=no -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+        cmake --build h5fortran/build
+        cmake --install h5fortran/build
+
+    - name: Configure MSIS
+      run: cmake -B build -Dmsis2:BOOL=${{ matrix.msis2 }} "-DCMAKE_PREFIX_PATH=.." -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - name: Build MSIS
       run: cmake --build build
