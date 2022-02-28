@@ -34,6 +34,7 @@ if(PATCH)
 
   execute_process(COMMAND ${PATCH} ${in_file} --input=${patch_file} --output=${out_file}
   TIMEOUT 15
+  COMMAND_ECHO STDOUT
   RESULT_VARIABLE ret
   )
 
