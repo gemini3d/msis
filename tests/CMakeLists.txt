@@ -47,53 +47,51 @@ REQUIRED_FILES "${msis00_out};${msis00_ref}"
 
 
 # --- MSIS 2.0 tests
-if(NOT msis2)
-  return()
-endif()
+if(msis2)
+  add_executable(msis2test ${msis2_SOURCE_DIR}/msis2.0_test.F90)
+  target_link_libraries(msis2test PRIVATE msis2mod)
 
-add_executable(msis2test ${msis2_SOURCE_DIR}/msis2.0_test.F90)
-target_link_libraries(msis2test PRIVATE msis2mod)
+  add_test(NAME MSIS2
+  COMMAND msis2test
+  WORKING_DIRECTORY ${msis2_SOURCE_DIR}
+  )
 
-add_test(NAME MSIS2
-COMMAND msis2test
-WORKING_DIRECTORY ${msis2_SOURCE_DIR}
-)
+  set(msis2_in ${CMAKE_CURRENT_BINARY_DIR}/msis2_test_in.h5)
+  set(msis2_out ${CMAKE_CURRENT_BINARY_DIR}/msis2_test_out.h5)
+  set(msis2_ref ${CMAKE_CURRENT_SOURCE_DIR}/msis2_test_out.h5)
 
-set(msis2_in ${CMAKE_CURRENT_BINARY_DIR}/msis2_test_in.h5)
-set(msis2_out ${CMAKE_CURRENT_BINARY_DIR}/msis2_test_out.h5)
-set(msis2_ref ${CMAKE_CURRENT_SOURCE_DIR}/msis2_test_out.h5)
+  add_test(NAME unit:msis2_generate
+  COMMAND msis_generate ${msis2_in} 20
+  )
+  set_tests_properties(unit:msis2_generate PROPERTIES
+  FIXTURES_SETUP msis2_gen_fxt
+  LABELS unit
+  TIMEOUT 10
+  )
 
-add_test(NAME unit:msis2_generate
-COMMAND msis_generate ${msis2_in} 20
-)
-set_tests_properties(unit:msis2_generate PROPERTIES
-FIXTURES_SETUP msis2_gen_fxt
-LABELS unit
-TIMEOUT 10
-)
+  add_test(NAME unit:msis2_setup
+  COMMAND msis_setup ${msis2_in} ${msis2_out}
+  WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+  )
+  set_tests_properties(unit:msis2_setup PROPERTIES
+  FIXTURES_SETUP msis2_fxt
+  FIXTURES_REQUIRED msis2_gen_fxt
+  LABELS unit
+  REQUIRED_FILES ${msis2_in}
+  TIMEOUT 10
+  )
 
-add_test(NAME unit:msis2_setup
-COMMAND msis_setup ${msis2_in} ${msis2_out}
-WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-)
-set_tests_properties(unit:msis2_setup PROPERTIES
-FIXTURES_SETUP msis2_fxt
-FIXTURES_REQUIRED msis2_gen_fxt
-LABELS unit
-REQUIRED_FILES ${msis2_in}
-TIMEOUT 10
-)
-
-add_test(NAME unit:msis2_compare
-COMMAND msis_compare ${msis2_out} ${msis2_ref}
-WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-)
-set_tests_properties(unit:msis2_compare PROPERTIES
-FIXTURES_REQUIRED msis2_fxt
-LABELS unit
-TIMEOUT 10
-REQUIRED_FILES "${msis2_out};${msis2_ref}"
-)
+  add_test(NAME unit:msis2_compare
+  COMMAND msis_compare ${msis2_out} ${msis2_ref}
+  WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+  )
+  set_tests_properties(unit:msis2_compare PROPERTIES
+  FIXTURES_REQUIRED msis2_fxt
+  LABELS unit
+  TIMEOUT 10
+  REQUIRED_FILES "${msis2_out};${msis2_ref}"
+  )
+endif(msis2)
 
 get_property(_tests DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
 dll_test_path("h5fortran::h5fortran;msis_ifc" "${_tests}")
