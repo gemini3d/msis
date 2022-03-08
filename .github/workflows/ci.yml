@@ -50,12 +50,12 @@ jobs:
     - name: Install h5fortran
       timeout-minutes: 10
       run: |
-        cmake -S ${{ github.workspace }}/h5fortran -B ${{ github.workspace }}/h5fortran/build -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/.. -DBUILD_TESTING=no -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+        cmake -S ${{ github.workspace }}/h5fortran -B ${{ github.workspace }}/h5fortran/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_TESTING=no -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
         cmake --build ${{ github.workspace }}/h5fortran/build
         cmake --install ${{ github.workspace }}/h5fortran/build
 
     - name: Configure MSIS
-      run: cmake -B build -Dmsis2:BOOL=${{ matrix.msis2 }} -DCMAKE_PREFIX_PATH=${{ github.workspace }}/.. -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: cmake -B build -Dmsis2:BOOL=${{ matrix.msis2 }} -DCMAKE_PREFIX_PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - name: Build MSIS
       run: cmake --build build
@@ -101,12 +101,12 @@ jobs:
     - name: Install h5fortran
       timeout-minutes: 10
       run: |
-        cmake -S h5fortran -B h5fortran/build "-DCMAKE_INSTALL_PREFIX=.." -DBUILD_TESTING=no
+        cmake -S h5fortran -B h5fortran/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_TESTING=no
         cmake --build h5fortran/build
         cmake --install h5fortran/build
 
     - name: Configure MSIS
-      run: cmake -B build -Dmsis2:BOOL=${{ matrix.msis2 }} "-DCMAKE_PREFIX_PATH=.."
+      run: cmake -B build -Dmsis2:BOOL=${{ matrix.msis2 }} -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
     - name: Build MSIS
       run: cmake --build build
