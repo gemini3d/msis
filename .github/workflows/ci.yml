@@ -3,7 +3,6 @@ name: ci
 env:
   CTEST_PARALLEL_LEVEL: 3
   CMAKE_BUILD_TYPE: Release
-  CMAKE_GENERATOR: Ninja
   HOMEBREW_NO_INSTALL_CLEANUP: 1
 
 on:
@@ -67,6 +66,8 @@ jobs:
   windows:
     timeout-minutes: 20
     runs-on: windows-latest
+    env:
+      CMAKE_GENERATOR: MinGW Makefiles
 
     strategy:
       matrix:
@@ -79,10 +80,6 @@ jobs:
       with:
         update: true
         install: >-
-          git
-          patch
-          mingw-w64-x86_64-cmake
-          mingw-w64-x86_64-ninja
           mingw-w64-x86_64-gcc-fortran
           mingw-w64-x86_64-hdf5
 
