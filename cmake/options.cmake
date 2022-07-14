@@ -10,7 +10,7 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH true)
 # to make more usable by external programs, put all Fortran .mod generated module files in a single directory.
 set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/include)
 
-set(FETCHCONTENT_UPDATES_DISCONNECTED_MSIS2 true)
+set(FETCHCONTENT_UPDATES_DISCONNECTED true)
 
 # --- auto-ignore build directory
 if(NOT EXISTS ${PROJECT_BINARY_DIR}/.gitignore)

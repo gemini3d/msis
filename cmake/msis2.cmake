@@ -7,7 +7,8 @@ string(JSON msis2_sha256 GET ${_libj} msis2 sha256)
 FetchContent_Declare(MSIS2
 URL ${msis2_url}
 URL_HASH SHA256=${msis2_sha256}
-INACTIVITY_TIMEOUT 15
+INACTIVITY_TIMEOUT 60
+TLS_VERIFY true
 )
 
 FetchContent_Populate(MSIS2)
