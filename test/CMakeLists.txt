@@ -1,13 +1,9 @@
 add_executable(msis_generate test_gen_in.f90)
-target_link_libraries(msis_generate PRIVATE
-h5fortran::h5fortran
-$<$<BOOL:${HDF5_HAVE_PARALLEL}>:MPI::MPI_Fortran>
-)
+target_link_libraries(msis_generate PRIVATE h5fortran::h5fortran)
 
 add_executable(msis_compare test_msis.f90 assert.f90)
 target_link_libraries(msis_compare PRIVATE msis_ifc
 h5fortran::h5fortran
-$<$<BOOL:${HDF5_HAVE_PARALLEL}>:MPI::MPI_Fortran>
 )
 
 # --- MSISE00 tests
@@ -18,32 +14,20 @@ set(msis00_ref ${CMAKE_CURRENT_SOURCE_DIR}/msis00_test_out.h5)
 add_test(NAME unit:msis00_generate
 COMMAND msis_generate ${msis00_in} 0
 )
-set_tests_properties(unit:msis00_generate PROPERTIES
-FIXTURES_SETUP msis00_gen_fxt
-LABELS unit
-TIMEOUT 10
-)
+set_property(TEST unit:msis00_generate PROPERTY FIXTURES_SETUP msis00_gen_fxt)
 
 add_test(NAME unit:msis00_setup
 COMMAND msis_setup ${msis00_in} ${msis00_out}
 )
-set_tests_properties(unit:msis00_setup PROPERTIES
-FIXTURES_SETUP msis00_fxt
-FIXTURES_REQUIRED msis00_gen_fxt
-LABELS unit
-REQUIRED_FILES ${msis00_in}
-TIMEOUT 10
-)
+set_property(TEST unit:msis00_setup PROPERTY FIXTURES_SETUP msis00_fxt)
+set_property(TEST unit:msis00_setup PROPERTY FIXTURES_REQUIRED msis00_gen_fxt)
+set_property(TEST unit:msis00_setup PROPERTY REQUIRED_FILES ${msis00_in})
 
 add_test(NAME unit:msis00_compare
 COMMAND msis_compare ${msis00_out} ${msis00_ref}
 )
-set_tests_properties(unit:msis00_compare PROPERTIES
-FIXTURES_REQUIRED msis00_fxt
-LABELS unit
-TIMEOUT 10
-REQUIRED_FILES "${msis00_out};${msis00_ref}"
-)
+set_property(TEST unit:msis00_compare PROPERTY FIXTURES_REQUIRED msis00_fxt)
+set_property(TEST unit:msis00_compare PROPERTY REQUIRED_FILES "${msis00_out};${msis00_ref}")
 
 
 # --- MSIS 2.0 tests
@@ -63,35 +47,26 @@ if(msis2)
   add_test(NAME unit:msis2_generate
   COMMAND msis_generate ${msis2_in} 20
   )
-  set_tests_properties(unit:msis2_generate PROPERTIES
-  FIXTURES_SETUP msis2_gen_fxt
-  LABELS unit
-  TIMEOUT 10
-  )
+  set_property(TEST unit:msis2_generate PROPERTY FIXTURES_SETUP msis2_gen_fxt)
 
   add_test(NAME unit:msis2_setup
   COMMAND msis_setup ${msis2_in} ${msis2_out}
   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
   )
-  set_tests_properties(unit:msis2_setup PROPERTIES
-  FIXTURES_SETUP msis2_fxt
-  FIXTURES_REQUIRED msis2_gen_fxt
-  LABELS unit
-  REQUIRED_FILES ${msis2_in}
-  TIMEOUT 10
-  )
+  set_property(TEST unit:msis2_setup PROPERTY FIXTURES_SETUP msis2_fxt)
+  set_property(TEST unit:msis2_setup PROPERTY FIXTURES_REQUIRED msis2_gen_fxt)
+  set_property(TEST unit:msis2_setup PROPERTY REQUIRED_FILES ${msis2_in})
 
   add_test(NAME unit:msis2_compare
   COMMAND msis_compare ${msis2_out} ${msis2_ref}
   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
   )
-  set_tests_properties(unit:msis2_compare PROPERTIES
-  FIXTURES_REQUIRED msis2_fxt
-  LABELS unit
-  TIMEOUT 10
-  REQUIRED_FILES "${msis2_out};${msis2_ref}"
-  )
+  set_property(TEST unit:msis2_compare PROPERTY FIXTURES_REQUIRED msis2_fxt)
+  set_property(TEST unit:msis2_compare PROPERTY REQUIRED_FILES "${msis2_out};${msis2_ref}")
 endif(msis2)
 
 get_property(_tests DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
 dll_test_path("h5fortran::h5fortran;msis_ifc" "${_tests}")
+
+set_property(TEST ${_tests} PROPERTY LABELS unit)
+set_property(TEST ${_tests} PROPERTY TIMEOUT 10)

@@ -1,4 +1,4 @@
-set_directory_properties(PROPERTIES LABELS msis)
+set_property(DIRECTORY PROPERTY LABELS msis)
 
 # --- MSISE00 and MSIS 2.0 require legacy workaround due to non-standard Fortran code
 
@@ -33,14 +33,11 @@ endif(msis2)
 
 # --- Standalone MSIS runner
 
-target_link_libraries(msis_setup PRIVATE msis_ifc h5fortran::h5fortran
-$<$<BOOL:${HDF5_HAVE_PARALLEL}>:MPI::MPI_Fortran>
-)
-set_target_properties(msis_setup PROPERTIES
-RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
-DEBUG_POSTFIX .debug
-RELWITHDEBINFO_POSTFIX .debug
-)
+target_link_libraries(msis_setup PRIVATE msis_ifc h5fortran::h5fortran)
+
+set_property(TARGET msis_setup PROPERTY RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
+set_property(TARGET msis_setup PROPERTY DEBUG_POSTFIX .debug)
+set_property(TARGET msis_setup PROPERTY RELWITHDEBINFO_POSTFIX .debug)
 
 install(TARGETS msis00mod msis_ifc msis_setup
 EXPORT ${PROJECT_NAME}-targets

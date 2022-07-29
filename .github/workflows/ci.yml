@@ -20,8 +20,8 @@ jobs:
         shared: [true, false]
         msis2: [true, false]
         image: [
-          {os: ubuntu-latest, fc: gfortran, cmd: sudo apt update && sudo apt install libhdf5-dev},
-          {os: macos-latest, fc: gfortran-11, cmd: brew install hdf5}
+          {os: ubuntu-latest, fc: gfortran, cmd: sudo apt update && sudo apt install libhdf5-mpi-dev},
+          {os: macos-latest, fc: gfortran-11, cmd: brew install hdf5-mpi}
         ]
 
     runs-on: ${{ matrix.image.os }}
@@ -30,15 +30,15 @@ jobs:
       FC: ${{ matrix.image.fc }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install system libs
       run: ${{ matrix.image.cmd }}
 
     - name: Download h5fortran
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
-        repository: geospace-code/h5fortran
+        repository: geospace-code/h5fortran-mpi
         path: h5fortran
 
     - name: Install h5fortran
@@ -58,50 +58,50 @@ jobs:
       run: ctest --test-dir build --preset default -V
 
 
-  windows:
-    timeout-minutes: 20
-    runs-on: windows-latest
-    env:
-      CMAKE_GENERATOR: MinGW Makefiles
+  # windows:
+  #   timeout-minutes: 20
+  #   runs-on: windows-latest
+  #   env:
+  #     CMAKE_GENERATOR: MinGW Makefiles
 
-    strategy:
-      matrix:
-        msis2: [true, false]
-        # shared: [true, false]
-        # shared always error 135 even on only msis shared. not a problem on real pc.
+  #   strategy:
+  #     matrix:
+  #       msis2: [true, false]
+  #       # shared: [true, false]
+  #       # shared always error 135 even on only msis shared. not a problem on real pc.
 
-    steps:
-    - uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: >-
-          mingw-w64-x86_64-gcc-fortran
-          mingw-w64-x86_64-hdf5
+  #   steps:
+  #   - uses: msys2/setup-msys2@v2
+  #     with:
+  #       update: true
+  #       install: >-
+  #         mingw-w64-x86_64-gcc-fortran
+  #         mingw-w64-x86_64-hdf5
 
-    - name: Put MSYS2_MinGW64 on PATH
-      # this is because GNU Patch doesn't work from MSYS2 shell
-      run: echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+  #   - name: Put MSYS2_MinGW64 on PATH
+  #     # this is because GNU Patch doesn't work from MSYS2 shell
+  #     run: echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-    - uses: actions/checkout@v2
+  #   - uses: actions/checkout@v3
 
-    - name: Download h5fortran
-      uses: actions/checkout@v2
-      with:
-        repository: geospace-code/h5fortran
-        path: h5fortran
+  #   - name: Download h5fortran
+  #     uses: actions/checkout@v3
+  #     with:
+  #       repository: geospace-code/h5fortran
+  #       path: h5fortran
 
-    - name: Install h5fortran
-      timeout-minutes: 10
-      run: |
-        cmake -S h5fortran -B h5fortran/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_TESTING=no
-        cmake --build h5fortran/build
-        cmake --install h5fortran/build
+  #   - name: Install h5fortran
+  #     timeout-minutes: 10
+  #     run: |
+  #       cmake -S h5fortran -B h5fortran/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_TESTING=no
+  #       cmake --build h5fortran/build
+  #       cmake --install h5fortran/build
 
-    - name: Configure MSIS
-      run: cmake -B build -Dmsis2:BOOL=${{ matrix.msis2 }} -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+  #   - name: Configure MSIS
+  #     run: cmake -B build -Dmsis2:BOOL=${{ matrix.msis2 }} -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
-    - name: Build MSIS
-      run: cmake --build build
+  #   - name: Build MSIS
+  #     run: cmake --build build
 
-    - name: Test MSIS
-      run: ctest --test-dir build  --preset default -V
+  #   - name: Test MSIS
+  #     run: ctest --test-dir build  --preset default -V
