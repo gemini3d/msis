@@ -17,10 +17,10 @@ logical :: has_msis2, debug = .false.
 character(:), allocatable :: infile,outfile
 
 integer, parameter :: comp_lvl = 3
-character(*), parameter :: parmfile = 'msis20.parm'
+character(*), parameter :: parmfile = 'msis21.parm'
 
 !> weak check that MSIS 2 seems to have been built
-!> build system (CMake) places msis20.parm in the binary dir of msis_setup whem cmake -Dmsis2=yes was set
+!> build system (CMake) places msis21.parm in the binary dir of msis_setup whem cmake -Dmsis2=yes was set
 inquire(file=parmfile, exist=has_msis2)
 
 !> user options

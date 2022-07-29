@@ -14,6 +14,7 @@ else()
 endif()
 
 include(cmake/options.cmake)
+include(cmake/compilers.cmake)
 
 find_package(h5fortran CONFIG REQUIRED)
 
