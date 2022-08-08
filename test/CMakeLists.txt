@@ -32,11 +32,11 @@ set_property(TEST msis00_compare PROPERTY REQUIRED_FILES "${msis00_out};${msis00
 
 # --- MSIS 2.0 tests
 if(msis2)
-  add_executable(msis2test ${msis2_SOURCE_DIR}/msis2.1_test.F90)
+  add_executable(msis2test ${PROJECT_SOURCE_DIR}/src/msis2/msis2.1_test.F90)
   target_link_libraries(msis2test PRIVATE msis2mod)
 
   add_test(NAME MSIS2 COMMAND msis2test)
-  set_property(TEST MSIS2 PROPERTY WORKING_DIRECTORY ${msis2_SOURCE_DIR})
+  set_property(TEST MSIS2 PROPERTY WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/msis2)
 
   set(msis2_in ${CMAKE_CURRENT_BINARY_DIR}/msis2_test_in.h5)
   set(msis2_out ${CMAKE_CURRENT_BINARY_DIR}/msis2_test_out.h5)
