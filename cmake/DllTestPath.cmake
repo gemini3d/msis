@@ -1,14 +1,10 @@
 function(dll_test_path libs test_names)
 # if shared lib on Windows, need DLL on PATH
 
-if(NOT WIN32)
+if(NOT WIN32 OR CMAKE_VERSION VERSION_LESS 3.22)
   return()
 endif()
 
-if(CMAKE_VERSION VERSION_LESS 3.22)
-  message(VERBOSE "CMake ${CMAKE_VERSION} < 3.22: cannot apply ENVIRONMENT_MODIFICATION to ${test_names}")
-  return()
-endif()
 
 set(dll_mod)
 

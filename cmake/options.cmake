@@ -4,6 +4,8 @@ option(msis2 "use MSIS 2.x neutral atmosphere model")
 
 set(CMAKE_TLS_VERIFY true)
 
+include(GNUInstallDirs)
+
 # Rpath options necessary for shared library install to work correctly in user projects
 set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib)
 set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
