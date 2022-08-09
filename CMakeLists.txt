@@ -2,16 +2,10 @@ cmake_minimum_required(VERSION 3.11...3.25)
 
 project(msis
 LANGUAGES C Fortran
-VERSION 2.1.0.1
+VERSION 2.1.0.2
 )
 
 enable_testing()
-
-if(DEFINED ${PROJECT_NAME}_BUILD_TESTING)
-  set(${PROJECT_NAME}_BUILD_TESTING ${BUILD_TESTING})
-else()
-  set(${PROJECT_NAME}_BUILD_TESTING true)
-endif()
 
 include(cmake/options.cmake)
 include(cmake/compilers.cmake)
@@ -61,7 +55,7 @@ RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-if(${PROJECT_NAME}_BUILD_TESTING)
+if(BUILD_TESTING)
   include(cmake/DllTestPath.cmake)
 
   add_subdirectory(test)
