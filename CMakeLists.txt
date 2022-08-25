@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.11...3.25)
 
 project(msis
 LANGUAGES C Fortran
-VERSION 2.1.0.2
+VERSION 2.1.0.3
 )
 
 enable_testing()
