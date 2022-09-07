@@ -1,10 +1,10 @@
 !#######################################################################
-! MSIS® (NRL-SOF-014-1) SOFTWARE
-! NRLMSIS® empirical atmospheric model software. Use is governed by the
+! MSISï¿½ (NRL-SOF-014-1) SOFTWARE
+! NRLMSISï¿½ empirical atmospheric model software. Use is governed by the
 ! Open Source Academic Research License Agreement contained in the file
 ! nrlmsis2.1_license.txt, which is part of this software package. BY
 ! USING OR MODIFYING THIS SOFTWARE, YOU ARE AGREEING TO THE TERMS AND
-! CONDITIONS OF THE LICENSE.  
+! CONDITIONS OF THE LICENSE.
 !#######################################################################
 
 !!! ===========================================================================
@@ -68,10 +68,10 @@ module msis_dfn
     implicit none
 
     integer, intent(in)       :: ispec          ! Species index
-    real(kind=rp), intent(in) :: gf(0:maxnbf-1) ! Array of horizontal and temporal basis function terms   
+    real(kind=rp), intent(in) :: gf(0:maxnbf-1) ! Array of horizontal and temporal basis function terms
     type(tnparm), intent(in)  :: tpro           ! Structure containing temperature vertical profile parameters
     type(dnparm), intent(out) :: dpro           ! Output structure containing density vertical profile parameters
-        
+
     integer                   :: izf, i, i1, iz
     real(kind=rp)             :: Cterm, Rterm0, Rterm
     real(kind=rp)             :: bc(2)
@@ -139,7 +139,7 @@ module msis_dfn
       dpro%HC    = O1%beta(0,6)
       ! Dynamical correction
       dpro%R     = dot_product(O1%beta(0:mbf,7),gf(0:mbf))
-      dpro%R     = dpro%R + sfluxmod(7,gf,O1,0.0_rp)         
+      dpro%R     = dpro%R + sfluxmod(7,gf,O1,0.0_rp)
       dpro%R     = dpro%R + geomag(O1%beta(cmag:cmag+nmag-1,7),gf(cmag:cmag+12),gf(cmag+13:cmag+26))
       dpro%R     = dpro%R + utdep(O1%beta(cut:cut+nut-1,7),gf(cut:cut+8))
       dpro%zetaR = O1%beta(0,8)
@@ -164,7 +164,7 @@ module msis_dfn
       dpro%HMU   = HE%beta(0,3)
       ! Dynamical correction
       dpro%R     = dot_product(HE%beta(0:mbf,7),gf(0:mbf))
-      dpro%R     = dpro%R + sfluxmod(7,gf,HE,1.0_rp)         
+      dpro%R     = dpro%R + sfluxmod(7,gf,HE,1.0_rp)
       dpro%R     = dpro%R + geomag(HE%beta(cmag:cmag+nmag-1,7),gf(cmag:cmag+12),gf(cmag+13:cmag+26))
       dpro%R     = dpro%R + utdep(HE%beta(cut:cut+nut-1,7),gf(cut:cut+8))
       dpro%zetaR = HE%beta(0,8)
@@ -188,7 +188,7 @@ module msis_dfn
       dpro%HC    = H1%beta(0,6)
       ! Dynamical correction
       dpro%R     = dot_product(H1%beta(0:mbf,7),gf(0:mbf))
-      dpro%R     = dpro%R + sfluxmod(7,gf,H1,0.0_rp)        
+      dpro%R     = dpro%R + sfluxmod(7,gf,H1,0.0_rp)
       dpro%R     = dpro%R + geomag(H1%beta(cmag:cmag+nmag-1,7),gf(cmag:cmag+12),gf(cmag+13:cmag+26))
       dpro%R     = dpro%R + utdep(H1%beta(cut:cut+nut-1,7),gf(cut:cut+8))
       dpro%zetaR = H1%beta(0,8)
@@ -218,7 +218,7 @@ module msis_dfn
       ! Reference number density
       dpro%lnPhiF = 0.0_rp
       dpro%lndref = dot_product(N1%beta(0:mbf,0),gf(0:mbf))
-      dpro%lndref = dpro%lndref + sfluxmod(0,gf,N1,0.0_rp)         
+      dpro%lndref = dpro%lndref + sfluxmod(0,gf,N1,0.0_rp)
       dpro%lndref = dpro%lndref + geomag(N1%beta(cmag:cmag+nmag-1,0),gf(cmag:cmag+12),gf(cmag+13:cmag+26))
       dpro%lndref = dpro%lndref + utdep(N1%beta(cut:cut+nut-1,0),gf(cut:cut+8))
       dpro%zref = zetaB
@@ -287,10 +287,10 @@ module msis_dfn
 
 ! Failsafe -----   ---------------------------
     case default
-      stop 'Species not yet implemented'
+      error stop 'ERROR:MSIS: Species not yet implemented'
 
     endselect
-        
+
     ! Compute piecewise mass profile values and integration terms
     dpro%zetaMi(0) = dpro%zetaM - 2.0_rp*dpro%HML
     dpro%zetaMi(1) = dpro%zetaM - dpro%HML
@@ -342,7 +342,7 @@ module msis_dfn
         enddo
         dpro%Izref = dpro%Izref -  dpro%XMi(i)
       else
-        dpro%Izref = dpro%Izref - dpro%XMi(4)                
+        dpro%Izref = dpro%Izref - dpro%XMi(4)
       endif
     else if (dpro%zref .eq. zetaA) then
       Mzref = pwmp(dpro%zref,dpro%zetaMi,dpro%Mi,dpro%aMi)
@@ -359,10 +359,10 @@ module msis_dfn
         enddo
         dpro%Izref = dpro%Izref - (dpro%aMi(i)*tpro%WzetaA + dpro%XMi(i))
       else
-        dpro%Izref = dpro%Izref - dpro%XMi(4)                
+        dpro%Izref = dpro%Izref - dpro%XMi(4)
       endif
-    else 
-      stop 'Integrals at reference height not available'
+    else
+      error stop 'ERROR:MSIS: Integrals at reference height not available'
     endif
 
     ! C1 constraint for O1 at 85 km
@@ -379,7 +379,7 @@ module msis_dfn
       ! Compute coefficients for constrained splines
       dpro%cf(8:9) = matmul(bc,c1o1)
     endif
-        
+
     ! C1 constraint for NO at 122.5 km
     if (ispec .eq. 10) then
       Cterm = dpro%C*exp(-(dpro%zref - dpro%zetaC)/dpro%HC)
@@ -394,7 +394,7 @@ module msis_dfn
       ! Compute coefficients for constrained splines
       dpro%cf(8:9) = matmul(bc,c1no)
     endif
-        
+
   return
 
   end subroutine dfnparm
@@ -411,7 +411,7 @@ module msis_dfn
     implicit none
 
     real(kind=rp), intent(in) :: z            ! Geopotential height
-    real(kind=rp), intent(in) :: tnz, lndtotz ! Temperature, total number density at input z 
+    real(kind=rp), intent(in) :: tnz, lndtotz ! Temperature, total number density at input z
     real(kind=rp), intent(in) :: Vz, Wz       ! First and second indefinite integrals of 1/T at z
     real(kind=rp), intent(in) :: HRfact       ! Reduction factor for chemical/dynamical correction scale height below zetaF
     type(tnparm), intent(in)  :: tpro         ! Structure containing temperature vertical profile parameters
@@ -428,7 +428,7 @@ module msis_dfn
       dfnx = dmissing
       return
     endif
-        
+
     ! Anomalous Oxygen (legacy MSISE-00 formulation)
     if (dpro%ispec .eq. 9) then
       dfnx = dpro%lndref - (z - dpro%zref)/HOA - dpro%C*exp(-(z-dpro%zetaC)/dpro%HC)
@@ -443,7 +443,7 @@ module msis_dfn
         return
       endif
     endif
-        
+
     ! Chapman and logistic corrections
     select case(dpro%ispec)
     case(2,3,5,7)             !For N2, O2, He, and Ar: logistic correction only
@@ -469,7 +469,7 @@ module msis_dfn
         return
       endselect
     endif
-        
+
     ! Calculate hydrostatic term and apply to reference density
     Mz = pwmp(z,dpro%zetaMi,dpro%Mi,dpro%aMi)
     Ihyd = Mz * Vz - dpro%Izref
@@ -484,11 +484,11 @@ module msis_dfn
       enddo
       Ihyd = Ihyd - (dpro%aMi(i)*Wz + dpro%XMi(i))
     else if (z .ge. dpro%zetaMi(4)) then
-      Ihyd = Ihyd - dpro%XMi(4)                
+      Ihyd = Ihyd - dpro%XMi(4)
     endif
     dfnx = dpro%lndref - Ihyd * g0divkB  + ccor
-        
-    ! Apply ideal gas law                
+
+    ! Apply ideal gas law
     dfnx = exp(dfnx) * dpro%Tref/tnz
 
     return
@@ -531,9 +531,8 @@ module msis_dfn
     enddo
 
     ! If we are here this is a problem
-    stop 'Error in pwmp'
+    error stop 'ERROR:MSIS: Error in pwmp'
 
   end function pwmp
 
 end module msis_dfn
-

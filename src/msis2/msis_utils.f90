@@ -1,10 +1,10 @@
 !#######################################################################
-! MSIS® (NRL-SOF-014-1) SOFTWARE
-! NRLMSIS® empirical atmospheric model software. Use is governed by the
+! MSISï¿½ (NRL-SOF-014-1) SOFTWARE
+! NRLMSISï¿½ empirical atmospheric model software. Use is governed by the
 ! Open Source Academic Research License Agreement contained in the file
 ! nrlmsis2.1_license.txt, which is part of this software package. BY
 ! USING OR MODIFYING THIS SOFTWARE, YOU ARE AGREEING TO THE TERMS AND
-! CONDITIONS OF THE LICENSE.  
+! CONDITIONS OF THE LICENSE.
 !#######################################################################
 
 !!! ===========================================================================
@@ -31,9 +31,9 @@ contains
   !     http://earth-info.nga.mil/GandG/publications/historic/historic.html
   !   Featherstone, W. E., and S. J. Claessens (2008), Closed-form transformation between
   !     geodetic and ellipsoidal coordinates, Studia Geophysica et Geodaetica, 52, 1-18
-  !   Jekeli, C. (2009), Potential theory and static gravity field of the Earth, in 
+  !   Jekeli, C. (2009), Potential theory and static gravity field of the Earth, in
   !     Treatise on Geophysics, ed. T. Herring, vol 3, 11-42
-  !   NIMA Technical Report TR8350.2 (2000, 3rd edition, Amendment1), 
+  !   NIMA Technical Report TR8350.2 (2000, 3rd edition, Amendment1),
   !     http://earth-info.nga.mil/GandG/publications/tr8350.2/tr8350_2.html
   !==================================================================================================
   real(8) function alt2gph(lat,alt)
@@ -65,7 +65,7 @@ contains
     real(8), parameter  :: U0 = -GM*atan(epr)/Elin - wsq*asq/3d0 !Theoretical potential of reference ellipsoid (m^2/s^2)
     real(8), parameter  :: g0 = 9.80665d0 !Standard gravity (m/s^2), CGPM 1901; WMO
     real(8), parameter  :: GMdivElin = GM / Elin
-  
+
     ! Parameters for centrifugal potential taper
     real(8), parameter  :: x0sq = 2d7**2   !Axial distance squared at which tapering begins (m^2)
     real(8), parameter  :: Hsq = 1.2d7**2  !Relaxation scale length of taper (m^2)
@@ -81,7 +81,7 @@ contains
     xsq = (v + altm)**2 * (1 - sinsqlat)   !Squared x-coordinate of geocentric system, Featherstone eq. 1
     zsq = (v*(1-esq) + altm)**2 * sinsqlat !Squared z-coordinate of geocentric system, Featherstone eq. 3
     rsqminElinsq = xsq + zsq - Elinsq
-    usq = rsqminElinsq/2.0d0 + sqrt(rsqminElinsq**2 / 4.0d0 + Elinsq*zsq)  !Ellipsoidal distance coordinate, Featherstone eq. 19 
+    usq = rsqminElinsq/2.0d0 + sqrt(rsqminElinsq**2 / 4.0d0 + Elinsq*zsq)  !Ellipsoidal distance coordinate, Featherstone eq. 19
     cossqdelta = zsq / usq                 !Ellipsoidal polar angle, Featherstone eq. 21
 
     ! Compute gravitational potential
@@ -97,7 +97,7 @@ contains
       Vc = (wsq/2.0d0) * (Hsq*tanh((xsq-x0sq)/Hsq) + x0sq) !Centrifugal potential taper
     endif
     U = U - Vc
-  
+
     ! Compute geopotential height
     alt2gph = (U - U0) / g0 / 1000.0d0
 
@@ -159,7 +159,7 @@ contains
     integer                           :: j, k, l
     integer                           :: low, high
     real(kind=rp)                     :: w(-4:0)        !Weights for recursion relation
- 
+
     ! Initialize to zero
     S(:,:) = 0.0_rp
 
@@ -197,7 +197,7 @@ contains
     if ( ((i-1) .ge. 0) .and. ((i-1) .lt. (nd-2)) ) &
         S(-1,3) = w(-1) * S(-1,2) + (1.0_rp - w(0))*S(0,2)
     if ((i-2) .ge. 0) S(-2,3) = (1.0_rp - w(-1))*S(-1,2)
-    
+
     ! k = 4 (cubic splines)
     do l = 0, -2, -1
       j = i + l
@@ -210,7 +210,7 @@ contains
             S(l,4) = w(l)*S(l,3) + (1.0_rp - w(l+1))*S(l+1,3)
     enddo
     if ((i-3) .ge. 0) S(-3,4) = (1.0_rp - w(-2))*S(-2,3)
-  
+
     ! k = 5
     do l = 0, -3, -1
       j = i + l
@@ -245,9 +245,9 @@ contains
   !==================================================================================================
   ! DILOG: Calculate dilogarithm in the domain [0,1)
   ! Retains terms up to order 3 in the expansion, which results in relative errors less than 1E-5.
-  ! Reference: 
-  !   Ginsberg, E. S., and D. Zaborowski (1975), The Dilogarithm function of a real argument, 
-  !   Commun. ACM, 18, 200–202.
+  ! Reference:
+  !   Ginsberg, E. S., and D. Zaborowski (1975), The Dilogarithm function of a real argument,
+  !   Commun. ACM, 18, 200ï¿½202.
   !==================================================================================================
   real(kind=rp) function dilog(x0)
 

@@ -1,10 +1,10 @@
 !#######################################################################
-! MSIS® (NRL-SOF-014-1) SOFTWARE
-! NRLMSIS® empirical atmospheric model software. Use is governed by the
+! MSISï¿½ (NRL-SOF-014-1) SOFTWARE
+! NRLMSISï¿½ empirical atmospheric model software. Use is governed by the
 ! Open Source Academic Research License Agreement contained in the file
 ! nrlmsis2.1_license.txt, which is part of this software package. BY
 ! USING OR MODIFYING THIS SOFTWARE, YOU ARE AGREEING TO THE TERMS AND
-! CONDITIONS OF THE LICENSE.  
+! CONDITIONS OF THE LICENSE.
 !#######################################################################
 
 !!! ===========================================================================
@@ -22,7 +22,7 @@
 !
 !     CALLING SEQUENCE:
 !       CALL GTD8D(IYD, SEC, ALT, GLAT, GLONG, STL, F107A, F107, AP, MASS, D, T)
-!  
+!
 !     INPUT VARIABLES:
 !       IYD    Year and day as YYDDD (day of year from 1 to 365 (or 366))
 !                (Year is ignored in current model)
@@ -47,14 +47,14 @@
 !              AP(2:7) are only used when switch_legacy(9) = -1.0 in MSISINIT
 !       MASS   Mass number (Ignored in 2.0)
 !
-!     NOTES ON INPUT VARIABLES: 
+!     NOTES ON INPUT VARIABLES:
 !       - If lzalt_type = .false. in the MSISINIT call, then the ALT input
 !         argument is treated as geopotential height.
 !       - The STL input argument is ignored in NRLMSIS 2.0. Instead, local time
 !         is computed from universal time and longitude.
 !       - F107 and F107A values are the 10.7 cm radio flux at the Sun-Earth
-!         distance, not the radio flux at 1 AU. 
-!       - The MASS input argument is ignored in NRLMSIS 2.0; species to be 
+!         distance, not the radio flux at 1 AU.
+!       - The MASS input argument is ignored in NRLMSIS 2.0; species to be
 !         calculated are set in MSISINIT.
 !
 !     OUTPUT VARIABLES:
@@ -71,7 +71,7 @@
 !       T(1)  Exospheric temperature (K)
 !       T(2)  Temperature at altitude (K)
 !
-!     NOTES ON OUTPUT VARIABLES: 
+!     NOTES ON OUTPUT VARIABLES:
 !       - Missing density values are returned as 9.999e-38
 !       - Species included in mass density calculation are set in MSISINIT
 !

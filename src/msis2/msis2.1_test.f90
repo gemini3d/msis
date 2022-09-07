@@ -1,10 +1,10 @@
 !#######################################################################
-! MSIS® (NRL-SOF-014-1) SOFTWARE
-! NRLMSIS® empirical atmospheric model software. Use is governed by the
+! MSISï¿½ (NRL-SOF-014-1) SOFTWARE
+! NRLMSISï¿½ empirical atmospheric model software. Use is governed by the
 ! Open Source Academic Research License Agreement contained in the file
 ! nrlmsis2.1_license.txt, which is part of this software package. BY
 ! USING OR MODIFYING THIS SOFTWARE, YOU ARE AGREEING TO THE TERMS AND
-! CONDITIONS OF THE LICENSE.  
+! CONDITIONS OF THE LICENSE.
 !#######################################################################
 
 !!! ===========================================================================
@@ -26,7 +26,7 @@ program msistest
   integer                     :: iyd, mass
   real(4)                     :: sec, alt, glat, glong, stl, f107a, f107, ap(7), apd
   real(4)                     :: d(10),t(2)
-  
+
   integer                     :: i
   character(128)              :: dummy
 

@@ -32,7 +32,7 @@ set_property(TEST msis00_compare PROPERTY REQUIRED_FILES "${msis00_out};${msis00
 
 # --- MSIS 2.0 tests
 if(msis2)
-  add_executable(msis2test ${PROJECT_SOURCE_DIR}/src/msis2/msis2.1_test.F90)
+  add_executable(msis2test ${PROJECT_SOURCE_DIR}/src/msis2/msis2.1_test.f90)
   target_link_libraries(msis2test PRIVATE msis2mod)
 
   add_test(NAME MSIS2 COMMAND msis2test)

@@ -1,10 +1,10 @@
 !#######################################################################
-! MSIS® (NRL-SOF-014-1) SOFTWARE
-! NRLMSIS® empirical atmospheric model software. Use is governed by the
+! MSISï¿½ (NRL-SOF-014-1) SOFTWARE
+! NRLMSISï¿½ empirical atmospheric model software. Use is governed by the
 ! Open Source Academic Research License Agreement contained in the file
 ! nrlmsis2.1_license.txt, which is part of this software package. BY
 ! USING OR MODIFYING THIS SOFTWARE, YOU ARE AGREEING TO THE TERMS AND
-! CONDITIONS OF THE LICENSE.  
+! CONDITIONS OF THE LICENSE.
 !#######################################################################
 
 !!! ===========================================================================
@@ -19,7 +19,7 @@
 !
 !     CALLING SEQUENCE:
 !       CALL MSISINIT([OPTIONAL ARGUMENTS])
-!  
+!
 !     OPTIONAL ARGUMENTS:
 !       parmpath        File path pointing to the MSIS parameter file.
 !                         Default: Null string (current directory)
@@ -58,7 +58,7 @@
 !                         True = Geodetic altitude (km)
 !                         False = Geopotential height (km)
 !                         Default: True (Geodetic altitude)
-!       lspec_select    Logical array (1:10) flagging which densities to 
+!       lspec_select    Logical array (1:10) flagging which densities to
 !                         calculate.
 !                         True = Calculate, False = Do not calculate
 !                            1 - Mass density
@@ -73,14 +73,14 @@
 !                           10 - NO
 !                         Default values: True
 !       lmass_include   Logical array (1:10) flagging which species to include
-!                         in mass density calculation. Same ordering as 
+!                         in mass density calculation. Same ordering as
 !                         lspec_select.
 !                         Default values: True
 !       lN2_msis00      Logical flag for retrieving NRLMSISE-00 upper
 !                         thermospheric N2 variation. See paper for details.
 !                           False: Thermospheric N2 determined entirely by
 !                             temperature profile and the constant mixing ratio
-!                             of N2 in the lower atmosphere. 
+!                             of N2 in the lower atmosphere.
 !                           True: Upper thermospheric N2 relaxes to NRLMSISE-00
 !                             Values.
 !                         Default: False
@@ -103,7 +103,7 @@ module msis_init
   use msis_constants, only    : rp, nspec, nl, maxnbf, mbf
 
   implicit none
-  
+
   !Model flags
   logical       :: initflag = .false.           !Flags whether model has been initialized
   logical       :: haveparmspace = .false.      !Flags whether parameter space has been initialized and allocated
@@ -140,7 +140,7 @@ module msis_init
   type (basissubset)     :: OA   !Anomalous O
   type (basissubset)     :: NO
   integer                :: nvertparm
-  
+
   ! Reciprocal node difference arrays (constant values needed for B-spline calculations)
   real(kind=rp)          :: etaTN(0:30,2:6) = 0.0_rp
   real(kind=rp)          :: etaO1(0:30,2:6) = 0.0_rp
@@ -157,7 +157,7 @@ contains
   subroutine msisinit(parmpath,parmfile,iun,switch_gfn,switch_legacy, &
                       lzalt_type,lspec_select,lmass_include,lN2_msis00)
 
-    use msis_constants, only : specmass, nspec, maxnbf 
+    use msis_constants, only : specmass, nspec, maxnbf
 
     implicit none
 
@@ -298,7 +298,7 @@ contains
     ! F2, solar sflux modulation of the tides
     tsfx(ctide:cspw-1) = .true.
     ! F3, solar sflux modulation of stationary planetary wave 1
-    psfx(cspw:cspw+59) = .true. 
+    psfx(cspw:cspw+59) = .true.
 
     ! Calculate reciprocal node difference arrays
     do k = 2, 6
@@ -355,7 +355,7 @@ contains
         subset%beta = 0.0_rp
         subset%active = .false.
         subset%fitb = 0
-        
+
         ! Increment vertical parameter counter except for pressure
         if (name .ne. 'PR') nvertparm = nvertparm + nl - bl + 1
 
@@ -383,12 +383,9 @@ contains
 
     ! Check if file exists
     inquire(file=trim(name),exist=havefile)
-    if (havefile) then
-       open(unit=iun,file=trim(name),status='old',access='stream',convert='little_endian')
-    else
-       print *,"MSIS parameter set ",trim(name)," not found. Stopping."
-       stop
-    endif
+    if (.not. havefile) error stop "ERROR: MSIS parameter set " // trim(name) // " not found."
+
+    open(unit=iun,file=trim(name),status='old',access='stream',convert='little_endian')
 
     ! Read in parameter values into temporary double-precision array
     allocate(parmin(0:maxnbf-1,0:nvertparm-1))
@@ -479,7 +476,7 @@ contains
   ! TSELEC: Legacy switches and mapping to new switches
   !==================================================================================================
   subroutine tselec(sv)
-  
+
     use msis_constants, only  : nsfx, nsfxmod, nut, cspw, csfx, csfxmod, cmag, cut
 
     implicit none
@@ -487,7 +484,7 @@ contains
     real(4), intent(in)  :: sv(1:25)
 
     integer              :: i
-    
+
     !Set cross-terms flags
     do i = 1, 25
       sav(i) = sv(i)
@@ -498,7 +495,7 @@ contains
         swc(i) = 0.0
       endif
     enddo
-    
+
     !Main effects
     swg(0)                           = .true.                !Global term must be on
     swg(csfx:csfx+nsfx-1)            = (swleg(1) .eq. 1.0)   !Solar flux
@@ -612,7 +609,7 @@ contains
       swg(411:414) = .false.                                   !Mixed UT/Lon/Geomag (Daily mode terms)
       swg(439:440) = .false.                                   !Mixed UT/Lon/Geomag (Storm-time mode terms)
     endif
-    
+
   end subroutine tselec
 
   !==================================================================================================
@@ -629,7 +626,7 @@ contains
     do i = 1, 25
       svv(i) = sav(i)
     enddo
-  
+
   end subroutine tretrv
 
 end module msis_init

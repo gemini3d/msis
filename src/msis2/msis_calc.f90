@@ -1,10 +1,10 @@
 !#######################################################################
-! MSIS® (NRL-SOF-014-1) SOFTWARE
-! NRLMSIS® empirical atmospheric model software. Use is governed by the
+! MSISï¿½ (NRL-SOF-014-1) SOFTWARE
+! NRLMSISï¿½ empirical atmospheric model software. Use is governed by the
 ! Open Source Academic Research License Agreement contained in the file
 ! nrlmsis2.1_license.txt, which is part of this software package. BY
 ! USING OR MODIFYING THIS SOFTWARE, YOU ARE AGREEING TO THE TERMS AND
-! CONDITIONS OF THE LICENSE.  
+! CONDITIONS OF THE LICENSE.
 !#######################################################################
 
 !!! ===========================================================================
@@ -15,14 +15,14 @@
 !!! MSISCALC: Interface with re-ordered input arguments and output arrays.
 !
 !     PREREQUISITES:
-!       Must first run MSISINIT to load parameters and set switches. The 
+!       Must first run MSISINIT to load parameters and set switches. The
 !       MSISCALC subroutine checks for initialization and does a default
 !       initialization if necessary. This self-initialization will be removed
 !       in future versions.
 !
 !     CALLING SEQUENCE:
 !       CALL MSISCALC(DAY, UTSEC, Z, LAT, LON, SFLUXAVG, SFLUX, AP, TN, DN, [TEX])
-!  
+!
 !     INPUT VARIABLES:
 !       DAY       Day of year (1.0 to 365.0 or 366.0)
 !       UTSEC     Universal time (seconds)
@@ -44,7 +44,7 @@
 !                       prior to current time
 !                 AP(2:7) are only used when switch_legacy(9) = -1.0 in MSISINIT
 !
-!     NOTES ON INPUT VARIABLES: 
+!     NOTES ON INPUT VARIABLES:
 !       - The day-of-year dependence of the model only uses the DAY argument. If
 !         a continuous day-of-year dependence is desired, this argument should
 !         include the fractional day (e.g., DAY = <day of year> + UTSEC/86400.0
@@ -52,7 +52,7 @@
 !         treated as geodetic altitude.
 !         If lzalt_type = .false., then Z is treated as geopotential height.
 !       - F107 and F107A values are the 10.7 cm radio flux at the Sun-Earth
-!         distance, not the radio flux at 1 AU. 
+!         distance, not the radio flux at 1 AU.
 !
 !     OUTPUT VARIABLES:
 !       TN     Temperature at altitude (K)
@@ -68,7 +68,7 @@
 !       DN(10) NO number density (m-3)
 !       TEX    Exospheric temperature (K) (optional argument)
 !
-!     NOTES ON OUTPUT VARIABLES: 
+!     NOTES ON OUTPUT VARIABLES:
 !       - Missing density values are returned as 9.999e-38
 !       - Species included in mass density calculation are set in MSISINIT
 !
@@ -104,7 +104,7 @@ contains
     real(kind=rp), intent(in)  :: sfluxavg,sflux,ap(1:7)
     real(kind=rp), intent(out) :: tn, dn(1:10)
     real(kind=rp), intent(out), optional :: tex
-  
+
     real(kind=rp), save        :: lastday = -9999.0
     real(kind=rp), save        :: lastutsec = -9999.0
     real(kind=rp), save        :: lastlat = -9999.0
@@ -198,7 +198,7 @@ contains
               + tpro%cVB*delz + tpro%cWB
       endif
     endif
-        
+
     ! Species number densities at altitude
     HRfact = 0.5_rp * (1.0_rp + tanh(Hgamma*(zeta - zetagamma)))  !Reduction factor for chemical/dynamical correction scale height below zetagamma
     do ispec = 2, nspec-1

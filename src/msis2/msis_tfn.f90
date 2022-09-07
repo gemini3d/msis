@@ -1,10 +1,10 @@
 !#######################################################################
-! MSIS® (NRL-SOF-014-1) SOFTWARE
-! NRLMSIS® empirical atmospheric model software. Use is governed by the
+! MSISï¿½ (NRL-SOF-014-1) SOFTWARE
+! NRLMSISï¿½ empirical atmospheric model software. Use is governed by the
 ! Open Source Academic Research License Agreement contained in the file
 ! nrlmsis2.1_license.txt, which is part of this software package. BY
 ! USING OR MODIFYING THIS SOFTWARE, YOU ARE AGREEING TO THE TERMS AND
-! CONDITIONS OF THE LICENSE.  
+! CONDITIONS OF THE LICENSE.
 !#######################################################################
 
 !!! ===========================================================================
@@ -13,13 +13,13 @@
 !!! ===========================================================================
 
 !**************************************************************************************************
-! MSIS_TFN Module: Contains vertical temperature profile parameters and subroutines, including 
+! MSIS_TFN Module: Contains vertical temperature profile parameters and subroutines, including
 !                  temperature integration terms.
 !**************************************************************************************************
-module msis_tfn  
+module msis_tfn
 
   use msis_constants, only     : rp, nl
-    
+
   type tnparm
     sequence
     real(kind=rp)             :: cf(0:nl)    ! Spline coefficients
@@ -33,8 +33,8 @@ module msis_tfn
     real(kind=rp)             :: sigma
     real(kind=rp)             :: sigmasq
     real(kind=rp)             :: b           ! b = 1-tb0/tex
-    real(kind=rp)             :: beta(0:nl)  ! 1st integration coefficients on k=5 splines 
-    real(kind=rp)             :: gamma(0:nl) ! 2nd integration coefficients on k=6 splines 
+    real(kind=rp)             :: beta(0:nl)  ! 1st integration coefficients on k=5 splines
+    real(kind=rp)             :: gamma(0:nl) ! 2nd integration coefficients on k=6 splines
     real(kind=rp)             :: cVs         ! 1st integration constant (spline portion)
     real(kind=rp)             :: cVb         ! 1st integration constant (Bates portion)
     real(kind=rp)             :: cWs         ! 2nd integration constant (spline portion)
@@ -46,7 +46,7 @@ module msis_tfn
   end type tnparm
 
   contains
-    
+
   !==================================================================================================
   ! TFNPARM: Compute the vertical temperature and species-independent profile parameters
   !==================================================================================================
@@ -62,12 +62,12 @@ module msis_tfn
 
     implicit none
 
-    real(kind=rp), intent(in) :: gf(0:maxnbf-1) ! Array of horizontal and temporal basis function terms   
+    real(kind=rp), intent(in) :: gf(0:maxnbf-1) ! Array of horizontal and temporal basis function terms
     type(tnparm), intent(out) :: tpro           ! Output structure containing temperature vertical profile parameters
-    
+
     integer(4)                :: ix
     real(kind=rp)             :: bc(3)
-        
+
     ! Unconstrained spline coefficients
     do ix = 0, itb0-1
       tpro%cf(ix) = dot_product(TN%beta(0:mbf,ix),gf(0:mbf))
@@ -80,18 +80,18 @@ module msis_tfn
 
     ! Exospheric temperature
     tpro%tex = dot_product(TN%beta(0:mbf,itex),gf(0:mbf))
-    tpro%tex = tpro%tex + sfluxmod(itex,gf,TN,1.0_rp/TN%beta(0,itex))         
+    tpro%tex = tpro%tex + sfluxmod(itex,gf,TN,1.0_rp/TN%beta(0,itex))
     tpro%tex = tpro%tex + geomag(TN%beta(cmag:cmag+nmag-1,itex),gf(cmag:cmag+12),gf(cmag+13:cmag+26))
     tpro%tex = tpro%tex + utdep(TN%beta(cut:cut+nut-1,itex),gf(cut:cut+8))
 
     ! Temperature gradient at zetaB (122.5 km)
     tpro%tgb0 = dot_product(TN%beta(0:mbf,itgb0),gf(0:mbf))
-    if (smod(itgb0)) tpro%tgb0 = tpro%tgb0 + sfluxmod(itgb0,gf,TN,1.0_rp/TN%beta(0,itgb0))         
+    if (smod(itgb0)) tpro%tgb0 = tpro%tgb0 + sfluxmod(itgb0,gf,TN,1.0_rp/TN%beta(0,itgb0))
     tpro%tgb0 = tpro%tgb0 + geomag(TN%beta(cmag:cmag+nmag-1,itgb0),gf(cmag:cmag+12),gf(cmag+13:cmag+26))
 
     ! Temperature at zetaB (122.5 km)
     tpro%tb0 = dot_product(TN%beta(0:mbf,itb0),gf(0:mbf))
-    if (smod(itb0)) tpro%tb0 = tpro%tb0 + sfluxmod(itb0,gf,TN,1.0_rp/TN%beta(0,itb0))         
+    if (smod(itb0)) tpro%tb0 = tpro%tb0 + sfluxmod(itb0,gf,TN,1.0_rp/TN%beta(0,itb0))
     tpro%tb0 = tpro%tb0 + geomag(TN%beta(cmag:cmag+nmag-1,itb0),gf(cmag:cmag+12),gf(cmag+13:cmag+26))
 
     ! Shape factor
@@ -100,7 +100,7 @@ module msis_tfn
     ! Constrain top three spline coefficients for C2 continuity
     bc(1) = 1.0_rp/tpro%tb0
     bc(2) = -tpro%tgb0/(tpro%tb0*tpro%tb0)
-    bc(3) = -bc(2)*(tpro%sigma + 2.0_rp*tpro%tgb0/tpro%tb0)    
+    bc(3) = -bc(2)*(tpro%sigma + 2.0_rp*tpro%tgb0/tpro%tb0)
     tpro%cf(itb0:itex) = matmul(bc, c2tn)
 
     ! Reference temperature at zetaF (70 km)
@@ -109,8 +109,8 @@ module msis_tfn
     ! Reference temperature and gradient at zetaA (85 km)
     tpro%tzetaA = 1.0_rp / dot_product(tpro%cf(izAx:izAx+2),S4zetaA)
     tpro%dlntdzA = -dot_product(tpro%cf(izAx:izAx+2),wghtAxdz) * tpro%tzetaA
-        
-    ! Calculate spline coefficients for first and second 1/T integrals 
+
+    ! Calculate spline coefficients for first and second 1/T integrals
     tpro%beta(0) = tpro%cf(0)*wbeta(0)
     do ix = 1, nl
       tpro%beta(ix) = tpro%beta(ix-1) + tpro%cf(ix)*wbeta(ix)
@@ -119,7 +119,7 @@ module msis_tfn
     do ix = 1, nl
       tpro%gamma(ix) = tpro%gamma(ix-1) + tpro%beta(ix)*wgamma(ix)
     enddo
-        
+
     ! Integration terms and constants
     tpro%b = 1 - tpro%tb0 / tpro%tex
     tpro%sigmasq = tpro%sigma * tpro%sigma
@@ -136,9 +136,9 @@ module msis_tfn
     tpro%lndtotF = lnP0 - Mbarg0divkB*(tpro%VzetaF - tpro%Vzeta0) - log(kB*tpro%TzetaF)
 
     return
-    
+
   end subroutine tfnparm
-    
+
   !==================================================================================================
   ! TFNX: Compute the temperature at specified geopotential height
   !==================================================================================================
@@ -154,8 +154,8 @@ module msis_tfn
     type(tnparm), intent(in)  :: tpro         ! Structure containing temperature vertical profile parameters
 
     integer                   :: i, j
-  
-    if (z .lt. zetaB) then 
+
+    if (z .lt. zetaB) then
       ! Spline region
       i = max(iz-3,0)
       if (iz .lt. 3) then
@@ -172,5 +172,5 @@ module msis_tfn
     return
 
   end function tfnx
-    
+
 end module msis_tfn

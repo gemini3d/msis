@@ -1,6 +1,6 @@
 message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION} CMake ${CMAKE_VERSION} Toolchain ${CMAKE_TOOLCHAIN_FILE}")
 
-option(msis2 "use MSIS 2.x neutral atmosphere model")
+option(msis2 "use MSIS 2.x neutral atmosphere model" on)
 option(BUILD_TESTING "build test programs" on)
 
 set(CMAKE_TLS_VERIFY true)

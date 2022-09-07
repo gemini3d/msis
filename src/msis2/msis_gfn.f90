@@ -1,10 +1,10 @@
 !#######################################################################
-! MSIS® (NRL-SOF-014-1) SOFTWARE
-! NRLMSIS® empirical atmospheric model software. Use is governed by the
+! MSISï¿½ (NRL-SOF-014-1) SOFTWARE
+! NRLMSISï¿½ empirical atmospheric model software. Use is governed by the
 ! Open Source Academic Research License Agreement contained in the file
 ! nrlmsis2.1_license.txt, which is part of this software package. BY
 ! USING OR MODIFYING THIS SOFTWARE, YOU ARE AGREEING TO THE TERMS AND
-! CONDITIONS OF THE LICENSE.  
+! CONDITIONS OF THE LICENSE.
 !#######################################################################
 
 !!! ===========================================================================
@@ -13,7 +13,7 @@
 !!! ===========================================================================
 
 !**************************************************************************************************
-! MSIS_GFN Module: Contains subroutines to calculate global (horizontal and time-dependent) model 
+! MSIS_GFN Module: Contains subroutines to calculate global (horizontal and time-dependent) model
 !                  basis functions
 !**************************************************************************************************
 module msis_gfn
@@ -22,7 +22,7 @@ module msis_gfn
   use msis_init, only      : TN,PR,N2,O2,O1,HE,H1,AR,N1,OA,NO, swg
 
   implicit none
-  
+
   real(kind=rp)                :: plg(0:maxn,0:maxn)
   real(kind=rp)                :: cdoy(2), sdoy(2)
   real(kind=rp)                :: clst(3), slst(3)
@@ -33,7 +33,7 @@ module msis_gfn
   real(kind=rp)                :: lastdoy = -999.9
   real(kind=rp)                :: lastlst = -999.9
   real(kind=rp)                :: lastlon = -999.9
- 
+
 contains
 
   !==================================================================================================
@@ -149,7 +149,7 @@ contains
     enddo
 
     ! Intra-annual (annual and semiannual)
-    if (c .ne. cintann) stop 'problem with basis definitions'
+    if (c .ne. cintann) error stop 'ERROR:MSIS: problem with basis definitions'
     do s = 1, amaxs
       cosdoy = cdoy(s)
       sindoy = sdoy(s)
@@ -162,7 +162,7 @@ contains
     enddo
 
     ! Migrating Tides (local time dependence)
-    if (c .ne. ctide) stop 'problem with basis definitions'
+    if (c .ne. ctide) error stop 'ERROR:MSIS: problem with basis definitions'
     do l = 1, tmaxl
       coslst = clst(l)
       sinlst = slst(l)
@@ -188,7 +188,7 @@ contains
     enddo
 
     ! Stationary Planetary Waves (longitude dependence)
-    if (c .ne. cspw) stop 'problem with basis definitions'
+    if (c .ne. cspw) error stop 'ERROR:MSIS: problem with basis definitions'
     do m = 1, pmaxm
       coslon = clon(m)
       sinlon = slon(m)
@@ -212,9 +212,9 @@ contains
         enddo
       enddo
     enddo
-    
+
     ! Linear solar flux terms
-    if (c .ne. csfx) stop 'problem with basis definitions'
+    if (c .ne. csfx) error stop 'ERROR:MSIS: problem with basis definitions'
     dfa = sfluxavg - sfluxavgref
     df = sflux - sfluxavg
     bf(c) = dfa
@@ -225,7 +225,7 @@ contains
     c = c + nsfx
 
     ! Additional linear terms
-    if (c .ne. cextra) stop 'problem with basis definitions'
+    if (c .ne. cextra) error stop 'ERROR:MSIS: problem with basis definitions'
     sza = solzen(doy,lst,lat,lon)
     bf(c)    = -0.5_rp*tanh((sza-98.0_rp)/6.0_rp)  !Solar zenith angle logistic function for O, H (transition width 3 deg, transition sza for horizon at ~65 km altitude)
     bf(c+1)  = -0.5_rp*tanh((sza-101.5_rp)/20.0_rp) !Solar zenith angle logistic function for NO (transition width 10 deg, transition sza for horizon at ~130 km altitude)
@@ -246,7 +246,7 @@ contains
     bf(c+12)  = bf(c+10)*plg(4,0)               !P(4,0) modulation of truncated quadratic F10.7a term
     bf(c+13)  = df*plg(2,0)                     !P(2,0) modulation of df --> (F10.7 - F10.7a)
     bf(c+14)  = df*plg(4,0)                     !P(4,0) modulation of df --> (F10.7 - F10.7a)
-    
+
     !---------------------------------------------
     ! Nonlinear Terms
     !---------------------------------------------
@@ -254,16 +254,16 @@ contains
     c = cnonlin
 
     ! Solar flux modulation terms
-    if (c .ne. csfxmod) stop 'problem with basis definitions'
-    bf(c) = dfa  
+    if (c .ne. csfxmod) error stop 'ERROR:MSIS: problem with basis definitions'
+    bf(c) = dfa
     bf(c+1) = dfa*dfa
-    bf(c+2) = df 
+    bf(c+2) = df
     bf(c+3) = df*df
     bf(c+4) = df*dfa
     c = c + nsfxmod
 
     ! Terms needed for legacy geomagnetic activity dependence
-    if (c .ne. cmag) stop 'problem with basis set'
+    if (c .ne. cmag) error stop 'ERROR:MSIS: problem with basis set'
     bf(c:c+6) = ap - 4.0
     bf(c+8) =   doy2rad*doy
     bf(c+9) =   lst2rad*lst
@@ -294,7 +294,7 @@ contains
     ! Apply Switches
     !---------------------------------------------
     where(.not. swg(0:mbf)) bf(0:mbf) = 0.0_rp
-    
+
     return
 
   end subroutine globe
@@ -415,7 +415,7 @@ contains
   end function sfluxmod
 
   !==================================================================================================
-  ! GEOMAG: Legacy nonlinear ap dependence (daily ap mode and ap history mode), including mixed 
+  ! GEOMAG: Legacy nonlinear ap dependence (daily ap mode and ap history mode), including mixed
   !         ap/UT/Longitude terms.
   ! Master switch control is as follows:
   !   swg(cmag) .nor. swg(cmag+1)   Do nothing: Return zero
@@ -437,7 +437,7 @@ contains
     real(kind=rp)              :: delA, gbeta, ex, sumex, G(1:6)
     integer(4)                 :: i
 
-    ! Return zero if both master switches are off    
+    ! Return zero if both master switches are off
     if (.not. (swg(cmag) .or. swg(cmag+1))) then
       geomag = 0.0_rp
       return
