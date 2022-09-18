@@ -51,9 +51,8 @@ end select
 !> select input format
 call input_hdf5(infile, msis_version, doy,sec,f107a,f107,Ap, glat, glon, alt)
 
-if(msis_version == 20 .and. .not. has_msis2) then
-  write(stderr,'(a)') parmfile // " not found, required by MSIS 2.x, which requires 'cmake -Dmsis2=yes'"
-  error stop 20
+if(msis_version > 0 .and. .not. has_msis2) then
+  error stop "ERROR:msis_setup: " // parmfile // " not found, required by MSIS 2.x, which requires 'cmake -Dmsis2=yes'"
 endif
 
 !> Run MSIS
@@ -62,10 +61,7 @@ lx2 = size(alt,2)
 lx3 = size(alt,3)
 allocate(Dn(lx1,lx2,lx3, 9), Tn(lx1,lx2,lx3, 2))
 
-if(msis_version == 20) then
-  ! print *, "TRACE: msis_setup: MSIS 2.0 call msisinit"
-  call msisinit(parmfile=parmfile)
-endif
+if(msis_version > 0) call msisinit(parmfile=parmfile)
 
 do i=1,lx1
   do j=1,lx2
@@ -74,16 +70,15 @@ do i=1,lx1
       select case (msis_version)
       case (0)
         call msis_gtd7(doy, sec, alt(i,j,k), glat(i,j,k), glon(i,j,k), f107a, f107, Ap, Dn(i,j,k,:), Tn(i,j,k,:), use_meters=.true.)
-      case (20)
-        call msis_gtd8(doy, sec, alt(i,j,k), glat(i,j,k), glon(i,j,k), f107a, f107, Ap, Dn(i,j,k,:), Tn(i,j,k,:))
       case default
-        write (stderr,'(a,i0)') 'ERROR: expected msis_version = {0,20}, but got ', msis_version
-        error stop
+        !! MSIS 2.x
+        call msis_gtd8(doy, sec, alt(i,j,k), glat(i,j,k), glon(i,j,k), f107a, f107, Ap, Dn(i,j,k,:), Tn(i,j,k,:))
       end select
 
       !> sanity check
       if(debug .or. any(Dn(i,j,k,:) < 0) .or. any(Tn(i,j,k,:) > 1000000) .or. any(Tn(i,j,k,:) < 0)) then
-        write(stderr,'(a,i0,a,f4.0,1x,f10.3,1x,f8.3,1x,f8.3,1x,f8.3,1x,f8.3,1x,f8.3,1x,f4.0)') "MSIS", msis_version, &
+        write(stderr,'(a,f3.1,a,f4.0,1x,f10.3,1x,f8.3,1x,f8.3,1x,f8.3,1x,f8.3,1x,f8.3,1x,f4.0)') "MSIS", &
+        real(msis_version)/10, &
           " inputs: doy, UTsec, alt, glat, glon, f107a, f107, Ap ", &
           doy, sec, alt(i,j,k), glat(i,j,k), glon(i,j,k), f107a, f107, Ap(1)
         write(stderr, '(a,f15.3)') "N2 density: ", Dn(i,j,k,3)
