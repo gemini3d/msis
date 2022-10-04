@@ -1,9 +1,9 @@
 module msis_interface
-!! this module allows selecting MSISE00 or MSIS 2.0
+!! this module allows selecting MSISE00 or MSIS 2.x
 !! it is a thin abstraction of the MSIS routines
-!! MSISE00 is Fortran 66 style, while MSIS 2.0 is Fortran 90 style
+!! MSISE00 is Fortran 66 style, while MSIS 2.x is Fortran 90 style
 !!
-!! We assume MSISE00 is always available, which MSIS 2.0 might not be available.
+!! We assume MSISE00 is always available, but MSIS 2.x might not be available.
 
 use msis_calc, only : msiscalc
 use msis_init, only : msisinit
@@ -119,8 +119,8 @@ end subroutine msis_gtd7_r64
 
 
 subroutine msis_gtd8_r64(doy, UTsec, alt_km, glat, glon, f107a, f107, Ap7, Dn, Tn)
-!! translate MSIS 2.0 to MSISE00 gtd7-like
-!! assume MSIS 2.0 is real32
+!! translate MSIS 2.x to MSISE00 gtd7-like
+!! assume MSIS 2.x is real32
 class(*), intent(in) :: doy
 real(real64), intent(in) :: UTsec, alt_km, glat, glon, f107a, f107, Ap7(7)
 real(real64), intent(out) :: Dn(9), Tn(2)
@@ -138,7 +138,7 @@ select type (doy)
     error stop 'msis_gtd8: doy must be real or integer'
 end select
 
-! print *, "TRACE: MSIS 2.0 64 bit: inputs: doy, UTsec, alt_km, glat, glon, f107a, f107, Ap7", &
+! print *, "TRACE: MSIS 2.x 64 bit: inputs: doy, UTsec, alt_km, glat, glon, f107a, f107, Ap7", &
 !   dayOfYear, UTsec, alt_km, glat, glon, f107a, f107, Ap7(1)
 
 !> input validation
@@ -168,8 +168,8 @@ end subroutine msis_gtd8_r64
 
 
 subroutine msis_gtd8_r32(doy, UTsec, alt_km, glat, glon, f107a, f107, Ap7, Dn, Tn)
-!! translate MSIS 2.0 to MSISE00 gtd7-like
-!! assume MSIS 2.0 is also real32
+!! translate MSIS 2.x to MSISE00 gtd7-like
+!! assume MSIS 2.x is also real32
 class(*), intent(in) :: doy
 real(real32), intent(in) :: UTsec, alt_km, glat, glon, f107a, f107, Ap7(7)
 real(real32), intent(out) :: Dn(9), Tn(2)
@@ -187,7 +187,7 @@ select type (doy)
     error stop 'msis_gtd8: doy must be real or integer'
 end select
 
-! print *, "TRACE: MSIS 2.0 64 bit: inputs: doy, UTsec, alt_km, glat, glon, f107a, f107, Ap7", &
+! print *, "TRACE: MSIS 2.x 64 bit: inputs: doy, UTsec, alt_km, glat, glon, f107a, f107, Ap7", &
 !   dayOfYear, UTsec, alt_km, glat, glon, f107a, f107, Ap7(1)
 
 !> input validation
