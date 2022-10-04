@@ -1,8 +1,13 @@
 cmake_minimum_required(VERSION 3.11...3.25)
 
+get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(NOT is_multi_config AND NOT (CMAKE_BUILD_TYPE OR DEFINED ENV{CMAKE_BUILD_TYPE}))
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Release default")
+endif()
+
 project(msis
 LANGUAGES C Fortran
-VERSION 2.1.0.4
+VERSION 2.1.0.5
 )
 
 enable_testing()
@@ -10,7 +15,16 @@ enable_testing()
 include(cmake/options.cmake)
 include(cmake/compilers.cmake)
 
+if(msis2)
+  find_package(ffilesystem CONFIG REQUIRED)
+  if(ffilesystem_VERSION VERSION_LESS 4.0.1)
+    message(FATAL_ERROR "ffilesystem version 4.0.1 or greater is required (found ffilesystem ${ffilesystem_VERSION} at ${ffilesystem_DIR})")
+  endif()
+  message(STATUS "Found ffilesystem ${ffilesystem_VERSION}: ${ffilesystem_DIR}")
+endif()
+
 find_package(h5fortran CONFIG REQUIRED)
+message(STATUS "Found h5fortran ${h5fortran_VERSION}: ${h5fortran_DIR}")
 # HDF5 is used for input/output of data
 
 add_library(msis_ifc src/msis_interface.f90)

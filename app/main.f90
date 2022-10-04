@@ -17,11 +17,6 @@ logical :: has_msis2, debug = .false.
 character(:), allocatable :: infile,outfile
 
 integer, parameter :: comp_lvl = 3
-character(*), parameter :: parmfile = 'msis21.parm'
-
-!> weak check that MSIS 2 seems to have been built
-!> build system (CMake) places msis21.parm in the binary dir of msis_setup whem cmake -Dmsis2=yes was set
-inquire(file=parmfile, exist=has_msis2)
 
 !> user options
 select case (command_argument_count())
@@ -51,17 +46,13 @@ end select
 !> select input format
 call input_hdf5(infile, msis_version, doy,sec,f107a,f107,Ap, glat, glon, alt)
 
-if(msis_version > 0 .and. .not. has_msis2) then
-  error stop "ERROR:msis_setup: " // parmfile // " not found, required by MSIS 2.x, which requires 'cmake -Dmsis2=yes'"
-endif
-
 !> Run MSIS
 lx1 = size(alt,1)
 lx2 = size(alt,2)
 lx3 = size(alt,3)
 allocate(Dn(lx1,lx2,lx3, 9), Tn(lx1,lx2,lx3, 2))
 
-if(msis_version > 0) call msisinit(parmfile=parmfile)
+if(msis_version > 0) call msisinit()
 
 do i=1,lx1
   do j=1,lx2

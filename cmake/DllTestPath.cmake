@@ -10,14 +10,23 @@ set(dll_mod)
 
 foreach(lib IN LISTS libs)
 
+  message(DEBUG "${lib} examining if needed")
+
   get_target_property(ttype ${lib} TYPE)
   if(ttype STREQUAL "STATIC_LIBRARY")
     message(DEBUG "${lib} is ${ttype}. No need for ENVIRONMENT_MODIFICATION for ${test_names}")
     continue()
   endif()
 
-  get_target_property(imploc ${lib} IMPORTED_LOCATION_RELEASE)
+  foreach(t RELEASE RELWITHDEBINFO DEBUG NOCONFIG)
+    get_target_property(imploc ${lib} IMPORTED_LOCATION_${t})
+    if(imploc)
+      break()
+    endif()
+  endforeach()
+
   get_target_property(intloc ${lib} INTERFACE_LINK_LIBRARIES)
+
   if(imploc)
     foreach(l IN LISTS imploc)
       cmake_path(GET l PARENT_PATH loc)

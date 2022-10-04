@@ -158,6 +158,7 @@ contains
                       lzalt_type,lspec_select,lmass_include,lN2_msis00)
 
     use msis_constants, only : specmass, nspec, maxnbf
+    use filesystem, only : lib_dir, is_file
 
     implicit none
 
@@ -171,16 +172,9 @@ contains
     logical, intent(in), optional             :: lmass_include(1:nspec-1) !Array flagging which species should be included in mass density
     logical, intent(in), optional             :: lN2_msis00               !Flag for retrieving NRLMSISE-00 thermospheric N2 variations
 
-    character(len=128)                        :: parmpath1
-    character(len=128)                        :: parmfile1
+    character(:), allocatable                 :: parmpath1, bindir
+    character(256)                            :: parmfile1
     integer                                   :: iun1
-
-    ! Path to parameter file
-    if (present(parmpath)) then
-      parmpath1 = parmpath
-    else
-      parmpath1 = ''
-    endif
 
     ! Parameter file name
     if (present(parmfile)) then
@@ -188,6 +182,17 @@ contains
     else
       parmfile1 = 'msis21.parm'
     endif
+
+    ! Path to parameter file
+    if (present(parmpath)) then
+      parmpath1 = parmpath
+    else
+      bindir = lib_dir()
+      if(len_trim(bindir) > 0) then
+        if(is_file(bindir//'/'//parmfile1)) parmpath1 = bindir // '/'
+      endif
+    endif
+    if(.not.allocated(parmpath1)) parmpath1 = ''
 
     ! Initialize model parameter space
     if (.not. haveparmspace) call initparmspace()

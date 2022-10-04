@@ -63,7 +63,11 @@ if(msis2)
 endif(msis2)
 
 get_property(_tests DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
-dll_test_path("h5fortran::h5fortran;msis_ifc" "${_tests}")
+set(_l h5fortran::h5fortran msis_ifc)
+if(msis2)
+  list(APPEND _l ffilesystem::filesystem)
+endif()
+dll_test_path("${_l}" "${_tests}")
 
 set_property(TEST ${_tests} PROPERTY LABELS unit)
-set_property(TEST ${_tests} PROPERTY TIMEOUT 10)
+set_property(TEST ${_tests} PROPERTY TIMEOUT 30)
