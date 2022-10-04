@@ -16,11 +16,7 @@ include(cmake/options.cmake)
 include(cmake/compilers.cmake)
 
 if(msis2)
-  find_package(ffilesystem CONFIG REQUIRED)
-  if(ffilesystem_VERSION VERSION_LESS 4.0.1)
-    message(FATAL_ERROR "ffilesystem version 4.0.1 or greater is required (found ffilesystem ${ffilesystem_VERSION} at ${ffilesystem_DIR})")
-  endif()
-  message(STATUS "Found ffilesystem ${ffilesystem_VERSION}: ${ffilesystem_DIR}")
+  include(cmake/ffilesystem.cmake)
 endif()
 
 find_package(h5fortran CONFIG REQUIRED)
