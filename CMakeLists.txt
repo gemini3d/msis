@@ -13,7 +13,6 @@ VERSION 2.1.0.5
 enable_testing()
 
 include(cmake/options.cmake)
-include(cmake/compilers.cmake)
 
 if(msis2)
   include(cmake/ffilesystem.cmake)
@@ -54,6 +53,8 @@ if(msis2)
   )
 
   install(FILES ${msis2_parm_file} DESTINATION ${CMAKE_INSTALL_BINDIR})
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/msis_init.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
 endif()
 
 add_library(msis00mod src/msis00_gfortran.f src/msise00_data.f)

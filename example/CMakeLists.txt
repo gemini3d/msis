@@ -53,9 +53,9 @@ set_property(TEST msis00_compare PROPERTY REQUIRED_FILES "${msis00_out};${msis00
 
 
 # --- MSIS 2.x tests
-if(msis2)
+if(msis_MSIS2_FOUND)
   add_executable(msis2test ${root_dir}/src/msis2/msis2.1_test.f90)
-  target_link_libraries(msis2test PRIVATE msis2mod)
+  target_link_libraries(msis2test PRIVATE msis::msis_ifc)
 
   add_test(NAME MSIS2 COMMAND msis2test)
   set_property(TEST MSIS2 PROPERTY WORKING_DIRECTORY ${root_dir}/src/msis2)
@@ -82,7 +82,7 @@ if(msis2)
   )
   set_property(TEST msis2_compare PROPERTY FIXTURES_REQUIRED msis2_fxt)
   set_property(TEST msis2_compare PROPERTY REQUIRED_FILES "${msis2_out};${msis2_ref}")
-endif(msis2)
+endif()
 
 
 get_property(_tests DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
