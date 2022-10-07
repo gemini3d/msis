@@ -28,7 +28,7 @@ set(ffilesystem_cmake_args
 
 ExternalProject_Add(ffilesystem
 GIT_REPOSITORY https://github.com/scivision/fortran-filesystem.git
-GIT_TAG v4.0.1
+GIT_TAG v4.0.2
 CMAKE_ARGS ${ffilesystem_cmake_args}
 BUILD_BYPRODUCTS ${ffilesystem_LIBRARIES}
 GIT_SHALLOW true
