@@ -8,7 +8,7 @@ msis_init.F90
 msis_tfn.f90
 msis_utils.f90
 )
-target_link_libraries(msis2mod PRIVATE ffilesystem::filesystem)
+target_link_libraries(msis2mod PRIVATE ffilesystem::filesystem $<$<BOOL:${ffilesystem_dladdr}>:${CMAKE_DL_LIBS}>)
 
 install(TARGETS msis2mod EXPORT ${PROJECT_NAME}-targets
 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

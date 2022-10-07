@@ -68,6 +68,3 @@ if(msis2)
   list(APPEND _l ffilesystem::filesystem)
 endif()
 dll_test_path("${_l}" "${_tests}")
-
-set_property(TEST ${_tests} PROPERTY LABELS unit)
-set_property(TEST ${_tests} PROPERTY TIMEOUT 30)

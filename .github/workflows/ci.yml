@@ -21,8 +21,8 @@ jobs:
         shared: [true, false]
         msis2: [true, false]
         image: [
-          {os: ubuntu-latest, cmd: sudo apt update && sudo apt install libhdf5-mpi-dev},
-          {os: macos-latest, cmd: brew install hdf5-mpi && brew reinstall gcc}
+          {os: ubuntu-latest, cmd: sudo apt update && sudo apt install ninja-build libhdf5-mpi-dev},
+          {os: macos-latest, cmd: brew install ninja hdf5-mpi && brew reinstall gcc}
         ]
 
     runs-on: ${{ matrix.image.os }}
@@ -49,14 +49,14 @@ jobs:
 
     - name: Configure MSIS msis2=${{ matrix.msis2 }} shared=${{ matrix.shared }}
       run: >-
-        cmake -B build
+        cmake -B build -G Ninja
         -Dmsis2:BOOL=${{ matrix.msis2 }}
         -DCMAKE_PREFIX_PATH=${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
         -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
 
     - name: Build MSIS
-      run: cmake --build build --parallel || cmake --build build -v
+      run: cmake --build build --parallel
 
     - name: Test MSIS
       run: ctest --test-dir build --preset default -V

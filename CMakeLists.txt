@@ -51,7 +51,6 @@ if(msis2)
   add_custom_command(TARGET msis_setup POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_if_different ${msis2_parm_file} $<TARGET_FILE_DIR:msis_setup>
   COMMAND_EXPAND_LISTS
-  COMMENT "Copy: ${msis2_parm_file} => $<TARGET_FILE_DIR:msis_setup>"
   )
 
   install(FILES ${msis2_parm_file} DESTINATION ${CMAKE_INSTALL_BINDIR})
