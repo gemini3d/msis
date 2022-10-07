@@ -1,3 +1,21 @@
+function(locate_dll loc dll_mod)
+
+foreach(l IN LISTS loc)
+cmake_path(GET l PARENT_PATH ll)
+if(IS_DIRECTORY ${ll})
+  list(APPEND dll_mod "PATH=path_list_append:${ll}")
+  cmake_path(SET d NORMALIZE ${ll}/../bin)
+  # can't check bin/stem.dll as some libs add arbitrary stuff to stem
+  if(IS_DIRECTORY ${d})
+    list(APPEND dll_mod "PATH=path_list_append:${d}")
+    set(dll_mod ${dll_mod} PARENT_SCOPE)
+  endif()
+endif()
+endforeach()
+
+endfunction(locate_dll)
+
+
 function(dll_test_path libs test_names)
 # if shared lib on Windows, need DLL on PATH
 
@@ -28,28 +46,9 @@ foreach(lib IN LISTS libs)
   get_target_property(intloc ${lib} INTERFACE_LINK_LIBRARIES)
 
   if(imploc)
-    foreach(l IN LISTS imploc)
-      cmake_path(GET l PARENT_PATH loc)
-      if(IS_DIRECTORY ${loc})
-        list(APPEND dll_mod "PATH=path_list_append:${loc}")
-        cmake_path(SET d NORMALIZE ${loc}/../bin)
-        # can't check bin/stem.dll as some libs add arbitrary stuff to stem
-        if(IS_DIRECTORY ${d})
-          list(APPEND dll_mod "PATH=path_list_append:${d}")
-        endif()
-      endif()
-    endforeach()
+    locate_dll(${imploc} dll_mod)
   elseif(intloc)
-    foreach(l IN LISTS intloc)
-      cmake_path(GET l PARENT_PATH loc)
-      if(IS_DIRECTORY ${loc})
-        list(APPEND dll_mod "PATH=path_list_append:${loc}")
-        cmake_path(SET d NORMALIZE ${loc}/../bin)
-        if(IS_DIRECTORY ${d})
-          list(APPEND dll_mod "PATH=path_list_append:${d}")
-        endif()
-      endif()
-    endforeach()
+    locate_dll(${intloc} dll_mod)
   elseif(EXISTS ${lib})
     list(APPEND dll_mod "PATH=path_list_append:$<TARGET_FILE_DIR:${lib}>")
   else()
