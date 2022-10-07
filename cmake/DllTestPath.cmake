@@ -1,9 +1,10 @@
-function(locate_dll loc dll_mod)
+function(locate_dll loc)
 
 foreach(l IN LISTS loc)
 cmake_path(GET l PARENT_PATH ll)
 if(IS_DIRECTORY ${ll})
   list(APPEND dll_mod "PATH=path_list_append:${ll}")
+  set(dll_mod ${dll_mod} PARENT_SCOPE)
   cmake_path(SET d NORMALIZE ${ll}/../bin)
   # can't check bin/stem.dll as some libs add arbitrary stuff to stem
   if(IS_DIRECTORY ${d})
