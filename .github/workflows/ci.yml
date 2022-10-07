@@ -48,13 +48,30 @@ jobs:
         cmake --install h5fortran/build
 
     - name: Configure MSIS msis2=${{ matrix.msis2 }} shared=${{ matrix.shared }}
-      run: cmake -B build -Dmsis2:BOOL=${{ matrix.msis2 }} -DCMAKE_PREFIX_PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: >-
+        cmake -B build
+        -Dmsis2:BOOL=${{ matrix.msis2 }}
+        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+        -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
 
     - name: Build MSIS
       run: cmake --build build --parallel || cmake --build build -v
 
     - name: Test MSIS
       run: ctest --test-dir build --preset default -V
+
+    - name: Install MSIS
+      run: cmake --install build
+
+    - name: configure Example
+      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+
+    - name: Build Example
+      run: cmake --build example/build --parallel
+
+    - name: Test Example
+      run: ctest --test-dir example/build -V
 
 
   # windows:
