@@ -15,7 +15,7 @@ on:
 
 jobs:
 
-  linux_mac:
+  core:
     strategy:
       matrix:
         shared: [true, false]
@@ -44,14 +44,14 @@ jobs:
       timeout-minutes: 10
       run: |
         cmake -S h5fortran -B h5fortran/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_TESTING=no -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-        cmake --build h5fortran/build
+        cmake --build h5fortran/build --parallel
         cmake --install h5fortran/build
 
     - name: Configure MSIS msis2=${{ matrix.msis2 }} shared=${{ matrix.shared }}
       run: cmake -B build -Dmsis2:BOOL=${{ matrix.msis2 }} -DCMAKE_PREFIX_PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - name: Build MSIS
-      run: cmake --build build
+      run: cmake --build build --parallel || cmake --build build -v
 
     - name: Test MSIS
       run: ctest --test-dir build --preset default -V
