@@ -21,7 +21,7 @@ jobs:
         shared: [true, false]
         msis2: [true, false]
         image: [
-          {os: ubuntu-latest, cmd: sudo apt update && sudo apt install ninja-build libhdf5-mpi-dev},
+          {os: ubuntu-22.04, cmd: sudo apt update && sudo apt install ninja-build libhdf5-mpi-dev},
           {os: macos-latest, cmd: brew install ninja hdf5-mpi && brew reinstall gcc}
         ]
 
