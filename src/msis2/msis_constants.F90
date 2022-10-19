@@ -34,8 +34,8 @@ module msis_constants
   real(kind=rp), parameter   :: deg2rad = pi / 180.0_rp
   real(kind=rp), parameter   :: doy2rad = 2.0_rp*pi / 365.0_rp
   real(kind=rp), parameter   :: lst2rad = pi / 12.0_rp
-  !real(kind=rp), parameter   :: tanh1 = 0.761594155955765485_rp  ! tanh(1.0)
-  real(kind=rp), parameter   :: tanh1 = tanh(1.0_rp)
+  real(kind=rp), parameter   :: tanh1 = 0.761594155955765485_rp  ! tanh(1.0)
+  !real(kind=rp), parameter   :: tanh1 = tanh(1.0_rp)  !< some compiler (NVHPC) don't like parameter init tanh()
 
   ! Thermodynamic constants
   ! Boltzmann constant (CODATA 2018) (J/kg)
