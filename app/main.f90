@@ -5,7 +5,7 @@ use msis_interface, only : msis_gtd7, msis_gtd8, msisinit
 use h5fortran, only : hdf5_file, hsize_t
 use, intrinsic:: iso_fortran_env, only : real32, real64, stderr=>error_unit, stdout=>output_unit, stdin=>input_unit
 
-implicit none (type, external)
+implicit none
 
 integer :: i,j,k
 real(real32) :: doy,sec,f107a,f107, Ap(7)

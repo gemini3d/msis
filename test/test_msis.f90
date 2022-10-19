@@ -5,7 +5,7 @@ use, intrinsic :: iso_fortran_env, only : real32
 use h5fortran, only : hdf5_file
 use assert, only : assert_isclose
 
-implicit none (type, external)
+implicit none
 
 integer :: argc, msis_version_new, msis_version_ref
 character(1000) :: argv

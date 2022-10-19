@@ -8,7 +8,7 @@ module msis_interface
 use msis_calc, only : msiscalc
 use msis_init, only : msisinit
 use, intrinsic :: iso_fortran_env, only : real32, real64, int32
-implicit none (type, external)
+implicit none
 
 interface msis_gtd7
   module procedure msis_gtd7_r32, msis_gtd7_r64

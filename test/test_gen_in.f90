@@ -4,7 +4,7 @@ program gen_msis_test_in
 
 use, intrinsic :: iso_fortran_env, only : real32
 use h5fortran, only : hdf5_file
-implicit none (type, external)
+implicit none
 
 integer :: i, msis_version
 character(1000) :: buf

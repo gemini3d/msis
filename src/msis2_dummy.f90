@@ -1,7 +1,7 @@
 module msis_calc
 
 use, intrinsic :: iso_fortran_env, only : real32, stderr=>error_unit
-implicit none (type, external)
+implicit none
 
 contains
 
@@ -21,7 +21,7 @@ end module msis_calc
 module msis_init
 
 use, intrinsic :: iso_fortran_env, only : real32, stderr=>error_unit
-implicit none (type, external)
+implicit none
 
 contains
 
