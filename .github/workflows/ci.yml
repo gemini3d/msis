@@ -21,9 +21,12 @@ jobs:
         shared: [true, false]
         msis2: [true, false]
         image: [
-          {os: ubuntu-22.04, cmd: sudo apt update && sudo apt install ninja-build libhdf5-mpi-dev},
-          {os: macos-latest, cmd: brew install ninja hdf5-mpi && brew reinstall gcc}
+          {os: ubuntu-22.04, cmd: sudo apt update && sudo apt install ninja-build libhdf5-dev},
+          {os: macos-latest, cmd: brew install ninja hdf5 && brew reinstall gcc}
         ]
+        # future, these work
+        # libhdf5-mpi-dev
+        # hdf5-mpi
 
     runs-on: ${{ matrix.image.os }}
     timeout-minutes: 15
@@ -37,8 +40,9 @@ jobs:
     - name: Download h5fortran
       uses: actions/checkout@v3
       with:
-        repository: geospace-code/h5fortran-mpi
+        repository: geospace-code/h5fortran
         path: h5fortran
+        # geospace-code/h5fortran-mpi also works (future)
 
     - name: Install h5fortran
       timeout-minutes: 10
@@ -49,29 +53,34 @@ jobs:
 
     - name: Configure MSIS msis2=${{ matrix.msis2 }} shared=${{ matrix.shared }}
       run: >-
-        cmake -B build -G Ninja
+        cmake --preset default
         -Dmsis2:BOOL=${{ matrix.msis2 }}
         -DCMAKE_PREFIX_PATH=${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
         -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
 
     - name: Build MSIS
-      run: cmake --build build --parallel
+      run: cmake --build --preset default
 
     - name: Test MSIS
-      run: ctest --test-dir build --preset default -V
+      run: ctest --preset default
 
     - name: Install MSIS
       run: cmake --install build
 
     - name: configure Example
-      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+      run: >-
+        cmake --preset default
+        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+      working-directory: example
 
     - name: Build Example
-      run: cmake --build example/build --parallel
+      run: cmake --build --preset default
+      working-directory: example
 
     - name: Test Example
-      run: ctest --test-dir example/build -V
+      run: ctest --preset default
+      working-directory: example
 
 
   # windows:
@@ -114,10 +123,10 @@ jobs:
   #       cmake --install h5fortran/build
 
   #   - name: Configure MSIS
-  #     run: cmake -B build -Dmsis2:BOOL=${{ matrix.msis2 }} -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+  #     run: cmake --preset default -Dmsis2:BOOL=${{ matrix.msis2 }} -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
   #   - name: Build MSIS
-  #     run: cmake --build build
+  #     run: cmake --build --preset default
 
   #   - name: Test MSIS
-  #     run: ctest --test-dir build  --preset default -V
+  #     run: ctest --preset default
