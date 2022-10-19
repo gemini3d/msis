@@ -13,10 +13,7 @@ VERSION 2.1.0.6
 enable_testing()
 
 include(cmake/options.cmake)
-
-if(msis2)
-  include(cmake/ffilesystem.cmake)
-endif()
+include(cmake/compilers.cmake)
 
 find_package(h5fortran CONFIG REQUIRED)
 message(STATUS "Found h5fortran ${h5fortran_VERSION}: ${h5fortran_DIR}")
@@ -46,11 +43,6 @@ if(msis2)
 
   # MSIS 2.x needs this parm file.
   set(msis2_parm_file ${CMAKE_CURRENT_SOURCE_DIR}/src/msis2/msis21.parm)
-
-  add_custom_command(TARGET msis_setup POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different ${msis2_parm_file} $<TARGET_FILE_DIR:msis_setup>
-  COMMAND_EXPAND_LISTS
-  )
 
   install(FILES ${msis2_parm_file} DESTINATION ${CMAKE_INSTALL_BINDIR})
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/msis_init.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

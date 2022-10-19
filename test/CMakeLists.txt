@@ -53,7 +53,6 @@ if(msis2)
   set_property(TEST msis2_setup PROPERTY FIXTURES_SETUP msis2_fxt)
   set_property(TEST msis2_setup PROPERTY FIXTURES_REQUIRED msis2_gen_fxt)
   set_property(TEST msis2_setup PROPERTY REQUIRED_FILES ${msis2_in})
-  set_property(TEST msis2_setup PROPERTY WORKING_DIRECTORY $<TARGET_FILE_DIR:msis_setup>)
 
   add_test(NAME msis2_compare
   COMMAND msis_compare ${msis2_out} ${msis2_ref}
@@ -63,8 +62,5 @@ if(msis2)
 endif(msis2)
 
 get_property(_tests DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
-set(_l h5fortran::h5fortran msis_ifc)
-if(msis2)
-  list(APPEND _l ffilesystem::filesystem)
-endif()
-dll_test_path("${_l}" "${_tests}")
+
+dll_test_path("h5fortran::h5fortran;msis_ifc" "${_tests}")

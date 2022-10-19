@@ -158,7 +158,6 @@ contains
                       lzalt_type,lspec_select,lmass_include,lN2_msis00)
 
     use msis_constants, only : specmass, nspec, maxnbf
-    use filesystem, only : lib_dir, is_file
 
     implicit none
 
@@ -172,9 +171,10 @@ contains
     logical, intent(in), optional             :: lmass_include(1:nspec-1) !Array flagging which species should be included in mass density
     logical, intent(in), optional             :: lN2_msis00               !Flag for retrieving NRLMSISE-00 thermospheric N2 variations
 
-    character(:), allocatable                 :: parmpath1, bindir
+    character(:), allocatable                 :: parmpath1
     character(256)                            :: parmfile1
     integer                                   :: iun1
+    logical :: havefile
 
     ! Parameter file name
     if (present(parmfile)) then
@@ -187,10 +187,8 @@ contains
     if (present(parmpath)) then
       parmpath1 = parmpath
     else
-      bindir = lib_dir()
-      if(len_trim(bindir) > 0) then
-        if(is_file(bindir//'/'//parmfile1)) parmpath1 = bindir // '/'
-      endif
+      inquire(file=msis_datadir // '/' // parmfile1, exist=havefile)
+      if(havefile) parmpath1 = msis_datadir // '/'
     endif
     if(.not.allocated(parmpath1)) parmpath1 = ''
 
