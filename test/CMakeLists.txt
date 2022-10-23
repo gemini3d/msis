@@ -43,7 +43,7 @@ if(msis2)
   set(msis2_ref ${CMAKE_CURRENT_SOURCE_DIR}/msis2_test_out.h5)
 
   add_test(NAME msis2_generate
-  COMMAND msis_generate ${msis2_in} 20
+  COMMAND msis_generate ${msis2_in} 21
   )
   set_property(TEST msis2_generate PROPERTY FIXTURES_SETUP msis2_gen_fxt)
 
