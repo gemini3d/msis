@@ -1,4 +1,9 @@
-cmake_minimum_required(VERSION 3.11...3.25)
+cmake_minimum_required(VERSION 3.15...3.27)
+
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+  message(FATAL_ERROR "In-source builds are not allowed, please do:
+  cmake -B build")
+endif()
 
 get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if(NOT is_multi_config AND NOT (CMAKE_BUILD_TYPE OR DEFINED ENV{CMAKE_BUILD_TYPE}))
@@ -12,7 +17,7 @@ VERSION 2.1.0.6
 
 enable_testing()
 
-include(cmake/options.cmake)
+include(options.cmake)
 include(cmake/compilers.cmake)
 
 find_package(h5fortran CONFIG REQUIRED)
@@ -51,13 +56,7 @@ endif()
 
 add_library(msis00mod src/msis00_gfortran.f src/msise00_data.f)
 
-install(TARGETS msis00mod msis_ifc msis_setup
-EXPORT ${PROJECT_NAME}-targets
-LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
+install(TARGETS msis00mod msis_ifc msis_setup EXPORT ${PROJECT_NAME}-targets)
 
 if(BUILD_TESTING)
   include(cmake/DllTestPath.cmake)
@@ -66,3 +65,5 @@ if(BUILD_TESTING)
 endif()
 
 include(cmake/install.cmake)
+
+file(GENERATE OUTPUT .gitignore CONTENT "*")
