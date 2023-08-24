@@ -61,9 +61,12 @@ do i=1,lx1
       select case (msis_version)
       case (0)
         call msis_gtd7(doy, sec, alt(i,j,k), glat(i,j,k), glon(i,j,k), f107a, f107, Ap, Dn(i,j,k,:), Tn(i,j,k,:), use_meters=.true.)
-      case default
+      case (21)
         !! MSIS 2.x
         call msis_gtd8(doy, sec, alt(i,j,k), glat(i,j,k), glon(i,j,k), f107a, f107, Ap, Dn(i,j,k,:), Tn(i,j,k,:))
+      case default
+        write(stderr, '(a,i0)') "ERROR: msis_setup: unknown msis_version ", msis_version
+        error stop
       end select
 
       !> sanity check
