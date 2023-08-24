@@ -2,7 +2,12 @@
 
 [![ci](https://github.com/gemini3d/msis/actions/workflows/ci.yml/badge.svg)](https://github.com/gemini3d/msis/actions/workflows/ci.yml)
 
-High-level MSIS interface allowing selection of MSIS versions (default MSISE00 or optional MSIS 2.x).
+High-level MSIS interface allowing selection of MSIS versions.
+Default
+[MSISE00](https://map.nrl.navy.mil/map/pub/nrl/NRLMSIS/NRLMSISE-00),
+optional
+[MSIS 2.x](https://map.nrl.navy.mil/map/pub/nrl/NRLMSIS/), which has its own
+[license](./src/msis2/nrlmsis2.1_license.txt).
 
 ## Build
 
