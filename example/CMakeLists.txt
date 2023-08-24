@@ -2,7 +2,7 @@
 # CMake installed MSIS package is working properly, particularly for MSIS 2.x parm file finding
 # via lib_path()
 
-cmake_minimum_required(VERSION 3.11...3.25)
+cmake_minimum_required(VERSION 3.15...3.27)
 
 project(MSISexample LANGUAGES C Fortran)
 
@@ -87,7 +87,4 @@ get_property(_tests DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
 
 dll_test_path("h5fortran::h5fortran;msis::msis_ifc" "${_tests}")
 
-# --- auto-ignore build directory
-if(NOT EXISTS ${PROJECT_BINARY_DIR}/.gitignore)
-  file(WRITE ${PROJECT_BINARY_DIR}/.gitignore "*")
-endif()
+file(GENERATE OUTPUT .gitignore CONTENT "*")

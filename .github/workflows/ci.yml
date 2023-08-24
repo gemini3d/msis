@@ -2,6 +2,7 @@ name: ci
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
+  CTEST_NO_TESTS_ACTION: error
 
 on:
   push:
@@ -20,22 +21,29 @@ jobs:
       matrix:
         shared: [true, false]
         msis2: [true, false]
-        image: [
-          {os: ubuntu-22.04, cmd: sudo apt update && sudo apt install ninja-build libhdf5-dev},
-          {os: macos-latest, cmd: brew install ninja hdf5 && brew reinstall gcc}
-        ]
+        os: [ubuntu-latest, macos-latest]
         # future, these work
         # libhdf5-mpi-dev
         # hdf5-mpi
 
-    runs-on: ${{ matrix.image.os }}
+    env:
+      FC: gfortran-12
+
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install system libs
-      run: ${{ matrix.image.cmd }}
+    - name: Install system libs (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt update
+        sudo apt install libhdf5-dev
+
+    - name: Install system libs (macOS)
+      if: runner.os == 'macOS'
+      run: brew install hdf5
 
     - name: Download h5fortran
       uses: actions/checkout@v3
