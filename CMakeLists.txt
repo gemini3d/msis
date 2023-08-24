@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15...3.27)
+cmake_minimum_required(VERSION 3.19...3.27)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "In-source builds are not allowed, please do:
@@ -22,8 +22,11 @@ include(cmake/compilers.cmake)
 
 find_package(h5fortran CONFIG)
 if(h5fortran_FOUND)
-message(STATUS "Found h5fortran ${h5fortran_VERSION}: ${h5fortran_DIR}")
-# HDF5 is used for input/output of data
+  message(STATUS "Found h5fortran ${h5fortran_VERSION}: ${h5fortran_DIR}")
+  # HDF5 is used for input/output of data
+else()
+  message(STATUS "h5fortran auto-build")
+  include(cmake/h5fortran.cmake)
 endif()
 
 add_library(msis_ifc src/msis_interface.f90)

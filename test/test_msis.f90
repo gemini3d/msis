@@ -1,6 +1,6 @@
 program test_msis
 
-use, intrinsic :: iso_fortran_env, only : real32
+use, intrinsic :: iso_fortran_env, only : real32, stderr=>error_unit
 
 use h5fortran, only : hdf5_file
 use assert, only : assert_isclose
@@ -24,7 +24,11 @@ fref = trim(argv)
 call reader(fnew, msis_version_new, altnew, Dnew, Tnew)
 call reader(fref, msis_version_ref, altref, Dref, Tref)
 
-if(msis_version_new /= msis_version_ref) error stop "msis_version differs"
+if(msis_version_new /= msis_version_ref) then
+    write(stderr,*) "ERROR:test_msis: msis_version differs: old | new: ", &
+        msis_version_ref, msis_version_new
+    error stop
+endif
 call assert_isclose(Tnew, Tref, rtol=1e-5, err_msg='mismatch: Tn')
 call assert_isclose(Dnew, Dref, rtol=1e-5, err_msg='mismatch: Dn')
 
