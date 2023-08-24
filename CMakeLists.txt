@@ -33,7 +33,7 @@ $<INSTALL_INTERFACE:include>
 target_link_libraries(msis_ifc PRIVATE msis00mod)
 target_sources(msis_ifc PRIVATE $<$<NOT:$<BOOL:${msis2}>>:${CMAKE_CURRENT_SOURCE_DIR}/src/msis2_dummy.f90>)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/msis_interface.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/msis_interface.mod TYPE INCLUDE)
 
 add_executable(msis_setup app/main.f90)
 target_link_libraries(msis_setup PRIVATE msis_ifc h5fortran::h5fortran)
@@ -49,12 +49,13 @@ if(msis2)
   # MSIS 2.x needs this parm file.
   set(msis2_parm_file ${CMAKE_CURRENT_SOURCE_DIR}/src/msis2/msis21.parm)
 
-  install(FILES ${msis2_parm_file} DESTINATION ${CMAKE_INSTALL_BINDIR})
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/msis_init.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  install(FILES ${msis2_parm_file} TYPE BIN)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/msis_init.mod TYPE INCLUDE)
 
 endif()
 
 add_library(msis00mod src/msis00_gfortran.f src/msise00_data.f)
+target_compile_options(msis00mod PRIVATE ${legacy_flags})
 
 install(TARGETS msis00mod msis_ifc msis_setup EXPORT ${PROJECT_NAME}-targets)
 
