@@ -58,6 +58,11 @@ target_compile_options(msis00mod PRIVATE ${legacy_flags})
 install(TARGETS msis00mod msis_ifc EXPORT ${PROJECT_NAME}-targets)
 install(TARGETS msis_setup EXPORT ${PROJECT_NAME}-targets)
 
+# GLOBAL needed for use by FetchContent
+add_library(msis::msis INTERFACE IMPORTED GLOBAL)
+target_link_libraries(msis::msis INTERFACE msis_ifc h5fortran::h5fortran)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
+# avoid race condition when used by FetchContent
 
 if(BUILD_TESTING)
   add_subdirectory(test)

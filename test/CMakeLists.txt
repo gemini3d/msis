@@ -2,9 +2,7 @@ add_executable(msis_generate test_gen_in.f90)
 target_link_libraries(msis_generate PRIVATE h5fortran::h5fortran)
 
 add_executable(msis_compare test_msis.f90 assert.f90)
-target_link_libraries(msis_compare PRIVATE msis_ifc
-h5fortran::h5fortran
-)
+target_link_libraries(msis_compare PRIVATE msis::msis)
 
 # --- MSISE00 tests
 set(msis00_in ${CMAKE_CURRENT_BINARY_DIR}/msis00_test_in.h5)
