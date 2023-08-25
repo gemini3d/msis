@@ -1,8 +1,8 @@
 {
 
 "h5fortran": {
-  "url": "https://github.com/geospace-code/h5fortran.git",
-  "tag": "v4.10.2"
+  "url": "https://github.com/geospace-code/h5fortran",
+  "tag": "v4.10.3"
 },
 "msis2": {
   "url": "https://map.nrl.navy.mil/map/pub/nrl/NRLMSIS/NRLMSIS2.1/nrlmsis2.1.tar.gz",

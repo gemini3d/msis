@@ -45,25 +45,10 @@ jobs:
       if: runner.os == 'macOS'
       run: brew install hdf5
 
-    - name: Download h5fortran
-      uses: actions/checkout@v3
-      with:
-        repository: geospace-code/h5fortran
-        path: h5fortran
-        # geospace-code/h5fortran-mpi also works (future)
-
-    - name: Install h5fortran
-      timeout-minutes: 10
-      run: |
-        cmake -S h5fortran -B h5fortran/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_TESTING=no -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-        cmake --build h5fortran/build --parallel
-        cmake --install h5fortran/build
-
     - name: Configure MSIS msis2=${{ matrix.msis2 }} shared=${{ matrix.shared }}
       run: >-
         cmake --preset default
         -Dmsis2:BOOL=${{ matrix.msis2 }}
-        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
         -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
 

@@ -12,7 +12,7 @@ endif()
 
 project(msis
 LANGUAGES C Fortran
-VERSION 2.1.0.6
+VERSION 2.1.0.7
 )
 
 enable_testing()
