@@ -62,5 +62,3 @@ if(msis2)
 endif(msis2)
 
 get_property(_tests DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
-
-dll_test_path("h5fortran::h5fortran;msis_ifc" "${_tests}")

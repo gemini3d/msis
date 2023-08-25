@@ -2,13 +2,11 @@
 # CMake installed MSIS package is working properly, particularly for MSIS 2.x parm file finding
 # via lib_path()
 
-cmake_minimum_required(VERSION 3.15...3.27)
+cmake_minimum_required(VERSION 3.22...3.27)
 
 project(MSISexample LANGUAGES C Fortran)
 
 enable_testing()
-
-include(${PROJECT_SOURCE_DIR}/../cmake/DllTestPath.cmake)
 
 message(STATUS "${PROJECT_NAME} CMake ${CMAKE_VERSION}")
 
@@ -82,9 +80,20 @@ if(msis_MSIS2_FOUND)
   set_property(TEST msis2_compare PROPERTY REQUIRED_FILES "${msis2_out};${msis2_ref}")
 endif()
 
-
+# shared lib paths
 get_property(_tests DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
-
-dll_test_path("h5fortran::h5fortran;msis::msis_ifc" "${_tests}")
+if(WIN32)
+  set_property(TEST ${_tests} PROPERTY
+  ENVIRONMENT_MODIFICATION "PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../bin;PATH=path_list_append:${h5fortran_DIR}/../bin;PATH=path_list_append:${msis_DIR}/../lib"
+  )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set_property(TEST ${_tests} PROPERTY
+  ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../lib;LD_LIBRARY_PATH=path_list_append:${h5fortran_DIR}/../lib;LD_LIBRARY_PATH=path_list_append:${msis_DIR}/../lib"
+  )
+elseif(APPLE)
+  set_property(TEST ${_tests} PROPERTY
+  ENVIRONMENT_MODIFICATION "DYLD_LIBRARY_PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../lib;DYLD_LIBRARY_PATH=path_list_append:${h5fortran_DIR}/../lib;DYLD_LIBRARY_PATH=path_list_append:${msis_DIR}/../lib"
+  )
+endif()
 
 file(GENERATE OUTPUT .gitignore CONTENT "*")

@@ -70,8 +70,6 @@ if(h5fortran_FOUND)
 endif()
 
 if(BUILD_TESTING AND h5fortran_FOUND)
-  include(cmake/DllTestPath.cmake)
-
   add_subdirectory(test)
 endif()
 
