@@ -64,7 +64,7 @@ target_link_libraries(msis::msis INTERFACE msis_ifc h5fortran::h5fortran)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
 # avoid race condition when used by FetchContent
 
-if(BUILD_TESTING)
+if(${PROJECT_NAME}_BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
