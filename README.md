@@ -25,3 +25,11 @@ ctest --test-dir build
 
 cmake --install build
 ```
+
+By default the "msis_setup" executable is created, that requires h5fortran + HDF5. To build just the MSIS library interface without using HDF5:
+
+```sh
+cmake -Bbuild -Dmsis_BUILD_UTILS=off
+
+cmake --build build
+```

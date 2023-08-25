@@ -1,3 +1,5 @@
+if(${PROJECT_NAME}_BUILD_UTILS)
+
 add_executable(msis_generate test_gen_in.f90)
 target_link_libraries(msis_generate PRIVATE h5fortran::h5fortran)
 
@@ -27,6 +29,7 @@ COMMAND msis_compare ${msis00_out} ${msis00_ref}
 set_property(TEST msis00_compare PROPERTY FIXTURES_REQUIRED msis00_fxt)
 set_property(TEST msis00_compare PROPERTY REQUIRED_FILES "${msis00_out};${msis00_ref}")
 
+endif()
 
 # --- MSIS 2.x tests
 if(msis2)
@@ -36,6 +39,7 @@ if(msis2)
   add_test(NAME MSIS2 COMMAND msis2test)
   set_property(TEST MSIS2 PROPERTY WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/msis2)
 
+  if(${PROJECT_NAME}_BUILD_UTILS)
   set(msis2_in ${CMAKE_CURRENT_BINARY_DIR}/msis2_test_in.h5)
   set(msis2_out ${CMAKE_CURRENT_BINARY_DIR}/msis2_test_out.h5)
   set(msis2_ref ${CMAKE_CURRENT_SOURCE_DIR}/msis2_test_out.h5)
@@ -57,6 +61,6 @@ if(msis2)
   )
   set_property(TEST msis2_compare PROPERTY FIXTURES_REQUIRED msis2_fxt)
   set_property(TEST msis2_compare PROPERTY REQUIRED_FILES "${msis2_out};${msis2_ref}")
-endif(msis2)
 
-get_property(_tests DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
+  endif()
+endif(msis2)

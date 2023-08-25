@@ -12,7 +12,7 @@ endif()
 
 project(msis
 LANGUAGES C Fortran
-VERSION 2.1.0.4
+VERSION 2.1.0.5
 )
 
 enable_testing()
@@ -20,7 +20,9 @@ enable_testing()
 include(options.cmake)
 include(cmake/compilers.cmake)
 
-include(cmake/h5fortran.cmake)
+if(${PROJECT_NAME}_BUILD_UTILS)
+  include(cmake/h5fortran.cmake)
+endif()
 
 add_library(msis_ifc src/msis_interface.f90)
 target_include_directories(msis_ifc
@@ -33,11 +35,15 @@ target_sources(msis_ifc PRIVATE $<$<NOT:$<BOOL:${msis2}>>:${CMAKE_CURRENT_SOURCE
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/msis_interface.mod TYPE INCLUDE)
 
-add_executable(msis_setup app/main.f90)
-target_link_libraries(msis_setup PRIVATE msis_ifc h5fortran::h5fortran)
-set_property(TARGET msis_setup PROPERTY RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
-set_property(TARGET msis_setup PROPERTY DEBUG_POSTFIX .debug)
-set_property(TARGET msis_setup PROPERTY RELWITHDEBINFO_POSTFIX .debug)
+if(${PROJECT_NAME}_BUILD_UTILS)
+  add_executable(msis_setup app/main.f90)
+  target_link_libraries(msis_setup PRIVATE msis_ifc h5fortran::h5fortran)
+  set_property(TARGET msis_setup PROPERTY RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
+  set_property(TARGET msis_setup PROPERTY DEBUG_POSTFIX .debug)
+  set_property(TARGET msis_setup PROPERTY RELWITHDEBINFO_POSTFIX .debug)
+
+  install(TARGETS msis_setup EXPORT ${PROJECT_NAME}-targets)
+endif()
 
 if(msis2)
   add_subdirectory(src/msis2)
@@ -56,11 +62,12 @@ add_library(msis00mod src/msis00_gfortran.f src/msise00_data.f)
 target_compile_options(msis00mod PRIVATE ${legacy_flags})
 
 install(TARGETS msis00mod msis_ifc EXPORT ${PROJECT_NAME}-targets)
-install(TARGETS msis_setup EXPORT ${PROJECT_NAME}-targets)
 
 # GLOBAL needed for use by FetchContent
 add_library(msis::msis INTERFACE IMPORTED GLOBAL)
-target_link_libraries(msis::msis INTERFACE msis_ifc h5fortran::h5fortran)
+target_link_libraries(msis::msis INTERFACE msis_ifc
+$<$<BOOL:${${PROJECT_NAME}_BUILD_UTILS}>:h5fortran::h5fortran>
+)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
 # avoid race condition when used by FetchContent
 
