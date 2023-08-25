@@ -15,5 +15,3 @@ TLS_VERIFY ON
 )
 
 FetchContent_MakeAvailable(h5fortran)
-
-set(h5fortran_FOUND true)
