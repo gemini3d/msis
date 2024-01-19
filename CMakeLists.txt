@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19...3.27)
+cmake_minimum_required(VERSION 3.19...3.29)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "In-source builds are not allowed, please do:
@@ -20,8 +20,15 @@ enable_testing()
 include(options.cmake)
 include(cmake/compilers.cmake)
 
-if(${PROJECT_NAME}_BUILD_UTILS)
-  include(cmake/h5fortran.cmake)
+# to make more usable by external programs, put all Fortran .mod generated module files in a single directory.
+set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/include)
+file(MAKE_DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY})
+# avoid parent project race
+
+if(${PROJECT_NAME}_BUILD_UTILS AND PROJECT_IS_TOP_LEVEL)
+  include(cmake/GitSubmodule.cmake)
+  git_submodule(${CMAKE_CURRENT_SOURCE_DIR}/h5fortran)
+  add_subdirectory(h5fortran)
 endif()
 
 add_library(msis_ifc src/msis_interface.f90)

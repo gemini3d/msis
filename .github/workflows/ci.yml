@@ -3,6 +3,8 @@ name: ci
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   CTEST_NO_TESTS_ACTION: error
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
+  CTEST_PARALLEL_LEVEL: 4
 
 on:
   push:
@@ -27,13 +29,13 @@ jobs:
         # hdf5-mpi
 
     env:
-      FC: gfortran-12
+      FC: gfortran-13
 
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install system libs (Linux)
       if: runner.os == 'Linux'
