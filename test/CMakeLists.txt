@@ -64,3 +64,20 @@ if(msis2)
 
   endif()
 endif(msis2)
+
+get_property(_tests DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
+if(WIN32)
+  set_property(TEST ${_tests} PROPERTY
+  ENVIRONMENT_MODIFICATION "PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../bin"
+  )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set_property(TEST ${_tests} PROPERTY
+  ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../lib"
+  )
+elseif(APPLE)
+  set_property(TEST ${_tests} PROPERTY
+  ENVIRONMENT_MODIFICATION "DYLD_LIBRARY_PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../lib"
+  )
+endif()
+endif()
