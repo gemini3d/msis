@@ -36,8 +36,11 @@ if(msis2)
   add_executable(msis2test ${PROJECT_SOURCE_DIR}/src/msis2/msis2.1_test.f90)
   target_link_libraries(msis2test PRIVATE msis2mod)
 
-  add_test(NAME MSIS2 COMMAND msis2test)
-  set_property(TEST MSIS2 PROPERTY WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/msis2)
+  # to avoid writing output data in source dir during MSIS2 test, making it Git dirty
+  configure_file(${PROJECT_SOURCE_DIR}/src/msis2/msis2.1_test_in.txt msis2.1_test_in.txt COPYONLY)
+  configure_file(${msis2_parm_file} msis21.parm COPYONLY)
+
+  add_test(NAME MSIS2 COMMAND msis2test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
   if(${PROJECT_NAME}_BUILD_UTILS)
   set(msis2_in ${CMAKE_CURRENT_BINARY_DIR}/msis2_test_in.h5)
