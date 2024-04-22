@@ -9,7 +9,7 @@ option(${PROJECT_NAME}_BUILD_UTILS "build msis_setup" on)
 include(GNUInstallDirs)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND PROJECT_IS_TOP_LEVEL)
-  set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/local" CACHE PATH "default install path" FORCE)
+  set_property(CACHE CMAKE_INSTALL_PREFIX PROPERTY VALUE "${PROJECT_BINARY_DIR}/local")
 endif()
 
 # Necessary for shared library with Visual Studio / Windows oneAPI
