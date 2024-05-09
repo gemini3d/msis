@@ -17,6 +17,8 @@ VERSION 2.1.0.5
 
 enable_testing()
 
+include(GNUInstallDirs)
+
 include(options.cmake)
 include(cmake/compilers.cmake)
 
@@ -85,11 +87,3 @@ endif()
 include(cmake/install.cmake)
 
 file(GENERATE OUTPUT .gitignore CONTENT "*")
-
-include(FeatureSummary)
-
-add_feature_info(MSIS2 msis2 "MSIS 2.x")
-
-if(PROJECT_IS_TOP_LEVEL)
-feature_summary(WHAT ENABLED_FEATURES DISABLED_FEATURES)
-endif()
