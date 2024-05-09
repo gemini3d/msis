@@ -5,8 +5,8 @@ env:
   CTEST_NO_TESTS_ACTION: error
   CMAKE_BUILD_PARALLEL_LEVEL: 4
   CTEST_PARALLEL_LEVEL: 0
-  CMAKE_INSTALL_PREFIX: ~/libs
-  CMAKE_PREFIX_PATH: ~/libs
+  CMAKE_INSTALL_PREFIX: libs
+  CMAKE_PREFIX_PATH: libs
 
 on:
   push:
@@ -72,6 +72,7 @@ jobs:
   windows:
     timeout-minutes: 20
     runs-on: windows-latest
+
     env:
       CMAKE_GENERATOR: MinGW Makefiles
 
@@ -97,6 +98,8 @@ jobs:
 
     - name: Configure MSIS
       run: cmake --preset default -Dmsis2:BOOL=${{ matrix.msis2 }}
+      env:
+        HDF5_ROOT: ${{ runner.temp }}/msys64/mingw64
 
     - name: Build MSIS
       run: cmake --build --preset default
