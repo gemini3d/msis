@@ -4,7 +4,9 @@ env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   CTEST_NO_TESTS_ACTION: error
   CMAKE_BUILD_PARALLEL_LEVEL: 4
-  CTEST_PARALLEL_LEVEL: 4
+  CTEST_PARALLEL_LEVEL: 0
+  CMAKE_INSTALL_PREFIX: ~/libs
+  CMAKE_PREFIX_PATH: ~/libs
 
 on:
   push:
@@ -52,7 +54,6 @@ jobs:
         cmake --preset default
         -Dmsis2:BOOL=${{ matrix.msis2 }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-        -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
 
     - name: Build MSIS
       run: cmake --build --preset default
@@ -65,8 +66,6 @@ jobs:
 
     - name: Example-build & test
       run: cmake --workflow --preset default
-      env:
-        CMAKE_PREFIX_PATH: ${{ runner.temp }}
       working-directory: example
 
 
@@ -94,7 +93,7 @@ jobs:
       # this is because GNU Patch doesn't work from MSYS2 shell
       run: echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Configure MSIS
       run: cmake --preset default -Dmsis2:BOOL=${{ matrix.msis2 }}
