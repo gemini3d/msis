@@ -5,8 +5,6 @@ env:
   CTEST_NO_TESTS_ACTION: error
   CMAKE_BUILD_PARALLEL_LEVEL: 4
   CTEST_PARALLEL_LEVEL: 0
-  CMAKE_INSTALL_PREFIX: libs
-  CMAKE_PREFIX_PATH: libs
 
 on:
   push:
@@ -32,6 +30,8 @@ jobs:
 
     env:
       FC: gfortran-13
+      CMAKE_INSTALL_PREFIX: ~/libs
+      CMAKE_PREFIX_PATH: ~?libs
 
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
@@ -75,6 +75,8 @@ jobs:
 
     env:
       CMAKE_GENERATOR: MinGW Makefiles
+      CMAKE_INSTALL_PREFIX: libs
+      CMAKE_PREFIX_PATH: libs
 
     strategy:
       matrix:
