@@ -4,11 +4,11 @@ message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION} CMake ${CMAKE_VERSION} Toolch
 if(CMAKE_VERSION VERSION_LESS 3.21)
   get_property(not_top DIRECTORY PROPERTY PARENT_DIRECTORY)
   if(NOT not_top)
-    set(PROJECT_IS_TOP_LEVEL true)
+    set(${PROJECT_NAME}_IS_TOP_LEVEL true)
  endif()
 endif()
 
-option(${PROJECT_NAME}_BUILD_TESTING "build test programs" ${PROJECT_IS_TOP_LEVEL})
+option(${PROJECT_NAME}_BUILD_TESTING "build test programs" ${${PROJECT_NAME}_IS_TOP_LEVEL})
 
 option(${PROJECT_NAME}_BUILD_UTILS "build msis_setup" on)
 

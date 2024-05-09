@@ -27,7 +27,7 @@ set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/include)
 file(MAKE_DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY})
 # avoid parent project race
 
-if(${PROJECT_NAME}_BUILD_UTILS AND PROJECT_IS_TOP_LEVEL)
+if(${PROJECT_NAME}_BUILD_UTILS AND ${PROJECT_NAME}_IS_TOP_LEVEL)
   include(cmake/GitSubmodule.cmake)
   git_submodule(${CMAKE_CURRENT_SOURCE_DIR}/h5fortran)
   add_subdirectory(h5fortran)
