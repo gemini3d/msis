@@ -23,7 +23,7 @@ jobs:
       matrix:
         shared: [true, false]
         msis2: [true, false]
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-24.04, macos-latest]
         # future, these work
         # libhdf5-mpi-dev
         # hdf5-mpi
@@ -93,7 +93,6 @@ jobs:
           mingw-w64-x86_64-hdf5
 
     - name: Put MSYS2_MinGW64 on PATH
-      # this is because GNU Patch doesn't work from MSYS2 shell
       run: echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - uses: actions/checkout@v4
