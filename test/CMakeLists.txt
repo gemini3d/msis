@@ -1,4 +1,4 @@
-if(${PROJECT_NAME}_BUILD_UTILS)
+if(msis_BUILD_UTILS)
 
 add_executable(msis_generate test_gen_in.f90)
 target_link_libraries(msis_generate PRIVATE h5fortran::h5fortran)
@@ -42,7 +42,7 @@ if(msis2)
 
   add_test(NAME MSIS2 COMMAND msis2test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-  if(${PROJECT_NAME}_BUILD_UTILS)
+  if(msis_BUILD_UTILS)
   set(msis2_in ${CMAKE_CURRENT_BINARY_DIR}/msis2_test_in.h5)
   set(msis2_out ${CMAKE_CURRENT_BINARY_DIR}/msis2_test_out.h5)
   set(msis2_ref ${CMAKE_CURRENT_SOURCE_DIR}/msis2_test_out.h5)

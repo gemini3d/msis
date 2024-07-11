@@ -18,4 +18,4 @@ $<BUILD_INTERFACE:msis_datadir="${CMAKE_CURRENT_SOURCE_DIR}">
 $<INSTALL_INTERFACE:msis_datadir="${CMAKE_INSTALL_BINDIR}">
 )
 
-install(TARGETS msis2mod EXPORT ${PROJECT_NAME}-targets)
+install(TARGETS msis2mod EXPORT msis-targets)
