@@ -50,7 +50,7 @@ jobs:
       run: brew install hdf5
 
     - &checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Configure MSIS msis2=${{ matrix.msis2 }} shared=${{ matrix.shared }}
       run: >-
