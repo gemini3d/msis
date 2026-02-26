@@ -36,7 +36,7 @@ endif()
 add_library(msis_ifc src/msis_interface.f90)
 target_include_directories(msis_ifc
 PUBLIC
-$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+$<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY}>
 $<INSTALL_INTERFACE:include>
 )
 target_link_libraries(msis_ifc PRIVATE msis00mod)
