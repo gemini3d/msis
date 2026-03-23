@@ -31,8 +31,7 @@ jobs:
         # libhdf5-mpi-dev
         # hdf5-mpi
 
-    env:
-      FC: gfortran-14
+# macOS use gcc + gfortran to avoid HDF5 find fail and build fail
 
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
@@ -47,7 +46,10 @@ jobs:
 
     - name: Install system libs (macOS)
       if: runner.os == 'macOS'
-      run: brew install hdf5
+      run: |
+        brew install hdf5
+        echo "CC=gcc-15" >> $GITHUB_ENV
+        echo "FC=gfortran-15" >> $GITHUB_ENV
 
     - &checkout
       uses: actions/checkout@v6
