@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20...4.3)
+cmake_minimum_required(VERSION 3.21...4.3)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "In-source builds are not allowed, please do:
@@ -18,31 +18,33 @@ VERSION 2.1.0.5
 enable_testing()
 
 include(GNUInstallDirs)
+include(FetchContent)
 
 include(options.cmake)
 include(cmake/compilers.cmake)
 
 # to make more usable by external programs, put all Fortran .mod generated module files in a single directory.
-set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/include)
+set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR})
 file(MAKE_DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY})
 # avoid parent project race
 
 if(NOT TARGET h5fortran::h5fortran AND msis_BUILD_UTILS)
-  include(cmake/GitSubmodule.cmake)
-  git_submodule(${CMAKE_CURRENT_SOURCE_DIR}/h5fortran)
-  add_subdirectory(h5fortran)
+  file(READ cmake/libraries.json json)
+  string(JSON h5fortran_url GET "${json}" "h5fortran")
+  FetchContent_Declare(h5fortran URL ${h5fortran_url})
+  FetchContent_MakeAvailable(h5fortran)
 endif()
 
 add_library(msis_ifc src/msis_interface.f90)
 target_include_directories(msis_ifc
 PUBLIC
-$<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY}>
-$<INSTALL_INTERFACE:include>
+"$<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY};${h5fortran_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}>"
+$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 target_link_libraries(msis_ifc PRIVATE msis00mod)
 target_sources(msis_ifc PRIVATE $<$<NOT:$<BOOL:${msis2}>>:${CMAKE_CURRENT_SOURCE_DIR}/src/msis2_dummy.f90>)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/msis_interface.mod TYPE INCLUDE)
+install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/msis_interface.mod TYPE INCLUDE)
 
 if(msis_BUILD_UTILS)
   add_executable(msis_setup app/main.f90)
@@ -63,7 +65,7 @@ if(msis2)
   set(msis2_parm_file ${CMAKE_CURRENT_SOURCE_DIR}/src/msis2/msis21.parm)
 
   install(FILES ${msis2_parm_file} TYPE BIN)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/msis_init.mod TYPE INCLUDE)
+  install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/msis_init.mod TYPE INCLUDE)
 
 endif()
 
