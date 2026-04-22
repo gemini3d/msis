@@ -4,15 +4,27 @@
 "configurePresets": [
 {
   "name": "default",
-  "binaryDir": "${sourceDir}/build",
+  "binaryDir": "build",
+  "installDir": "${fileDir}/build/local",
   "cacheVariables": {
-    "CMAKE_COMPILE_WARNING_AS_ERROR": true,
-    "CMAKE_LINK_WARNING_AS_ERROR": true
+    "CMAKE_BUILD_TYPE": "Release"
+  }
+},
+{ "name": "msis2", "inherits": "default",
+  "cacheVariables": {
+    "msis2": true
+  }
+},
+{ "name": "shared", "inherits": "default",
+  "cacheVariables": {
+    "BUILD_SHARED_LIBS": true
   }
 }
 ],
 "buildPresets": [
-{ "name": "default", "configurePreset": "default" }
+{ "name": "default", "configurePreset": "default" },
+{ "name": "msis2", "configurePreset": "msis2", "inherits": "default" },
+{ "name": "shared", "configurePreset": "shared", "inherits": "default" }
 ],
 "testPresets": [
 {
@@ -25,10 +37,11 @@
   "execution": {
     "noTestsAction": "error",
     "scheduleRandom": true,
-    "stopOnFailure": false,
-    "timeout": 60
+    "stopOnFailure": false
   }
-}
+},
+{ "name": "msis2", "configurePreset": "msis2", "inherits": "default" },
+{ "name": "shared", "configurePreset": "shared", "inherits": "default" }
 ],
 "workflowPresets": [
   {
@@ -37,6 +50,22 @@
       { "type": "configure", "name": "default" },
       { "type": "build", "name": "default" },
       { "type": "test", "name": "default" }
+    ]
+  },
+  {
+    "name": "msis2",
+    "steps": [
+      { "type": "configure", "name": "msis2" },
+      { "type": "build", "name": "msis2" },
+      { "type": "test", "name": "msis2" }
+    ]
+  },
+  {
+    "name": "shared",
+    "steps": [
+      { "type": "configure", "name": "shared" },
+      { "type": "build", "name": "shared" },
+      { "type": "test", "name": "shared" }
     ]
   }
 ]

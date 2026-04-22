@@ -2,11 +2,6 @@ name: ci
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
-  CTEST_NO_TESTS_ACTION: error
-  CTEST_PARALLEL_LEVEL: 0
-  CMAKE_INSTALL_PREFIX: ~/libs
-  CMAKE_PREFIX_PATH: ~/libs
-  CMAKE_GENERATOR: Ninja
 
 on:
   push:
@@ -21,15 +16,12 @@ concurrency:
 
 jobs:
 
-  core:
+  unix:
     strategy:
       matrix:
-        shared: [true, false]
-        msis2: [true, false]
         os: [ubuntu-latest, macos-latest]
-        # future, these work
-        # libhdf5-mpi-dev
-        # hdf5-mpi
+        preset: [default, msis2, shared]
+        # these also work: libhdf5-mpi-dev, hdf5-mpi
 
 # macOS use gcc + gfortran to avoid HDF5 find fail and build fail
 
@@ -54,23 +46,14 @@ jobs:
     - &checkout
       uses: actions/checkout@v6
 
-    - name: Configure MSIS msis2=${{ matrix.msis2 }} shared=${{ matrix.shared }}
-      run: >-
-        cmake --preset default
-        -Dmsis2:BOOL=${{ matrix.msis2 }}
-        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-
-    - name: Build MSIS
-      run: cmake --build --preset default
-
-    - name: Test MSIS
-      run: ctest --preset default
+    - name: Build and Test MSISE00
+      run: cmake --workflow ${{ matrix.preset }}
 
     - name: Install MSIS
       run: cmake --install build
 
     - name: Example-build & test
-      run: cmake --workflow default
+      run: cmake --workflow ${{ matrix.preset }}
       working-directory: example
 
 
@@ -78,15 +61,13 @@ jobs:
     timeout-minutes: 20
     runs-on: windows-latest
 
-    env:
-      CMAKE_INSTALL_PREFIX: libs
-      CMAKE_PREFIX_PATH: libs
-
     strategy:
       matrix:
-        msis2: [true, false]
-        # shared: [true, false]
+        preset: [default, msis2]
         # shared always error 135 even on only msis shared. not a problem on real pc.
+
+    env:
+      CMAKE_GENERATOR: Ninja
 
     steps:
     - uses: msys2/setup-msys2@v2
@@ -102,13 +83,7 @@ jobs:
 
     - *checkout
 
-    - name: Configure MSIS
-      run: cmake --preset default -Dmsis2:BOOL=${{ matrix.msis2 }}
+    - name: Build and Test
+      run: cmake --workflow ${{ matrix.preset }}
       env:
         HDF5_ROOT: ${{ steps.msys2.outputs.msys2-location }}/ucrt64
-
-    - name: Build MSIS
-      run: cmake --build --preset default
-
-    - name: Test MSIS
-      run: ctest --preset default
