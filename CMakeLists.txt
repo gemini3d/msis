@@ -1,12 +1,7 @@
-cmake_minimum_required(VERSION 3.21...4.3)
-
-if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
-  message(FATAL_ERROR "In-source builds are not allowed, please do:
-  cmake -B build")
-endif()
+cmake_minimum_required(VERSION 3.25...4.5)
 
 get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-if(NOT is_multi_config AND NOT (CMAKE_BUILD_TYPE OR DEFINED ENV{CMAKE_BUILD_TYPE}))
+if(NOT is_multi_config AND NOT CMAKE_BUILD_TYPE AND NOT DEFINED ENV{CMAKE_BUILD_TYPE})
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Release default")
 endif()
 
@@ -28,7 +23,7 @@ set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_INCLUDE
 file(MAKE_DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY})
 # avoid parent project race
 
-if(NOT TARGET h5fortran::h5fortran AND msis_BUILD_UTILS)
+if(msis_BUILD_UTILS)
   file(READ cmake/libraries.json json)
   string(JSON h5fortran_url GET "${json}" "h5fortran")
   FetchContent_Declare(h5fortran URL ${h5fortran_url})
@@ -49,15 +44,38 @@ install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/msis_interface.mod TYPE INCLUDE)
 if(msis_BUILD_UTILS)
   add_executable(msis_setup app/main.f90)
   target_link_libraries(msis_setup PRIVATE msis_ifc h5fortran::h5fortran)
-  set_property(TARGET msis_setup PROPERTY RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
-  set_property(TARGET msis_setup PROPERTY DEBUG_POSTFIX .debug)
-  set_property(TARGET msis_setup PROPERTY RELWITHDEBINFO_POSTFIX .debug)
+  set_target_properties(msis_setup PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
+  DEBUG_POSTFIX .debug
+  RELWITHDEBINFO_POSTFIX .debug
+  )
 
   install(TARGETS msis_setup EXPORT msis-targets)
 endif()
 
 if(msis2)
-  add_subdirectory(src/msis2)
+  add_library(msis2mod
+  src/msis2/msis_calc.f90
+  src/msis2/msis_constants.F90
+  src/msis2/msis_dfn.f90
+  src/msis2/msis_gfn.f90
+  src/msis2/msis_gtd8d.f90
+  src/msis2/msis_init.F90
+  src/msis2/msis_tfn.f90
+  src/msis2/msis_utils.f90
+  )
+  target_include_directories(msis2mod PRIVATE ${CMAKE_Fortran_MODULE_DIRECTORY})
+
+  set_property(SOURCE src/msis2/msis_init.F90 PROPERTY
+  COMPILE_OPTIONS $<$<Fortran_COMPILER_ID:GNU>:-ffree-line-length-none>
+  )
+
+  target_compile_definitions(msis2mod PRIVATE
+  $<BUILD_INTERFACE:msis_datadir="${CMAKE_CURRENT_SOURCE_DIR}/src/msis2">
+  $<INSTALL_INTERFACE:msis_datadir="${CMAKE_INSTALL_BINDIR}">
+  )
+
+  install(TARGETS msis2mod EXPORT msis-targets)
 
   target_link_libraries(msis_ifc PUBLIC msis2mod)
 
@@ -66,11 +84,10 @@ if(msis2)
 
   install(FILES ${msis2_parm_file} TYPE BIN)
   install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/msis_init.mod TYPE INCLUDE)
-
 endif()
 
 add_library(msis00mod src/msis00_gfortran.f src/msise00_data.f)
-target_compile_options(msis00mod PRIVATE ${legacy_flags})
+target_compile_options(msis00mod PRIVATE ${msis_legacy_flags})
 
 install(TARGETS msis00mod msis_ifc EXPORT msis-targets)
 

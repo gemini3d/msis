@@ -3,5 +3,6 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
   "$<$<COMPILE_LANGUAGE:Fortran>:-Werror=line-truncation;-fimplicit-none>"
   $<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Release>>:-fno-backtrace>
   )
-  set(legacy_flags "$<$<COMPILE_LANGUAGE:Fortran>:-std=legacy;-fno-implicit-none>")
+
+  set(msis_legacy_flags "$<$<COMPILE_LANGUAGE:Fortran>:-std=legacy;-fno-implicit-none>")
 endif()
