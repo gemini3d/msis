@@ -2,7 +2,7 @@
 # CMake installed MSIS package is working properly, particularly for MSIS 2.x parm file finding
 # via lib_path()
 
-cmake_minimum_required(VERSION 3.22...3.27)
+cmake_minimum_required(VERSION 3.25)
 
 project(MSISexample LANGUAGES C Fortran)
 
