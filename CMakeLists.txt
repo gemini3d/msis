@@ -44,11 +44,6 @@ install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/msis_interface.mod TYPE INCLUDE)
 if(msis_BUILD_UTILS)
   add_executable(msis_setup app/main.f90)
   target_link_libraries(msis_setup PRIVATE msis_ifc h5fortran::h5fortran)
-  set_target_properties(msis_setup PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
-  DEBUG_POSTFIX .debug
-  RELWITHDEBINFO_POSTFIX .debug
-  )
 
   install(TARGETS msis_setup EXPORT msis-targets)
 endif()
