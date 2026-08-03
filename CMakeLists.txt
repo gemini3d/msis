@@ -42,8 +42,9 @@ target_sources(msis_ifc PRIVATE $<$<NOT:$<BOOL:${msis2}>>:${CMAKE_CURRENT_SOURCE
 install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/msis_interface.mod TYPE INCLUDE)
 
 if(msis_BUILD_UTILS)
-  add_executable(msis_setup app/main.f90)
+  add_executable(msis_setup app/main.F90)
   target_link_libraries(msis_setup PRIVATE msis_ifc h5fortran::h5fortran)
+  target_compile_definitions(msis_setup PRIVATE HAVE_MSIS2=$<IF:$<BOOL:${msis2}>,.true.,.false.>)
 
   install(TARGETS msis_setup EXPORT msis-targets)
 endif()
@@ -80,6 +81,7 @@ if(msis2)
   install(FILES ${msis2_parm_file} TYPE BIN)
   install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/msis_init.mod TYPE INCLUDE)
 endif()
+
 
 add_library(msis00mod src/msis00_gfortran.f src/msise00_data.f)
 target_compile_options(msis00mod PRIVATE ${msis_legacy_flags})

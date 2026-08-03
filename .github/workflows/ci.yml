@@ -46,7 +46,7 @@ jobs:
     - &checkout
       uses: actions/checkout@v7
 
-    - name: Build and Test MSISE00
+    - name: Build and Test MSIS
       run: cmake --workflow ${{ matrix.preset }}
 
     - name: Install MSIS

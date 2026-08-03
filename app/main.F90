@@ -13,7 +13,8 @@ real(real32), allocatable, dimension(:,:,:,:) :: Dn, Tn
 real(real32), allocatable, dimension(:,:,:) :: glat, glon, alt
 integer :: u, msis_version, lx1, lx2, lx3
 character(2048) :: buf
-logical :: has_msis2, debug = .false.
+logical :: have_msis2 = HAVE_MSIS2
+logical :: debug = .false.
 character(:), allocatable :: infile,outfile
 
 integer, parameter :: comp_lvl = 3
@@ -25,7 +26,7 @@ case (1)
   call get_command_argument(1, buf)
 
   if (buf == '-features') then
-    if(has_msis2) then
+    if(have_msis2) then
       print '(a)', "MSIS00 MSIS2"
     else
       print '(a)', "MSIS00"

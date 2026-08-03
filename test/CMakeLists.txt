@@ -1,5 +1,12 @@
 if(msis_BUILD_UTILS)
 
+add_test(NAME MSISsetupFeatures COMMAND msis_setup -features)
+set(_pat "MSIS00")
+if(msis2)
+  string(APPEND _pat " MSIS2")
+endif()
+set_tests_properties(MSISsetupFeatures PROPERTIES PASS_REGULAR_EXPRESSION ${_pat})
+
 add_executable(msis_generate test_gen_in.f90)
 target_link_libraries(msis_generate PRIVATE h5fortran::h5fortran)
 
